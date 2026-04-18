@@ -159,6 +159,6 @@ export const EMAIL_TEMPLATE_CONSTANTS = {
   MAX_EVENTS_PER_EMAIL: 10,
   MAX_DESCRIPTION_LENGTH: 200,
   DEFAULT_FROM_ADDRESS:
-    "Busso Events Notifications <notifications@busso.events>",
+    "Busso Events Notifications <notifications@isllm.com>",
   DEV_FROM_ADDRESS: "Busso Events Dev <onboarding@resend.dev>",
 } as const;

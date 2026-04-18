@@ -502,7 +502,7 @@ function generateEmailContent(
             <p style="margin: 0 0 15px 0; color: #6b7280; font-size: 14px;">
               You're receiving this email because you're subscribed to event notifications.
             </p>
-            <a href="${process.env.CONVEX_SITE_URL || "https://busso.events"}" style="background-color: #10b981; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 500;">
+            <a href="${process.env.CONVEX_SITE_URL || "https://events.isllm.com"}" style="background-color: #10b981; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 500;">
               Manage Subscriptions
             </a>
           </div>
