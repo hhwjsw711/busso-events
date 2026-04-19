@@ -63,17 +63,15 @@ export function SubscriptionDetailPage({
 
   if (subscription === undefined) {
     return (
-      <Container size="xl" pt="6rem">
-        <Center py="xl">
-          <Loader size="lg" />
-        </Center>
-      </Container>
+      <Center py="xl">
+        <Loader size="lg" />
+      </Center>
     );
   }
 
   if (subscription === null) {
     return (
-      <Container size="xl" pt="6rem">
+      <Container size="lg">
         <Group gap="md" mb="xl">
           <ActionIcon variant="subtle" onClick={onBack}>
             <IconArrowLeft size={20} />

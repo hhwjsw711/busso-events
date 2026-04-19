@@ -54,7 +54,7 @@ export function Header({ currentRoute }: HeaderProps) {
         left: 0,
         right: 0,
         width: "100%",
-        zIndex: 100,
+        zIndex: 1000,
         backgroundColor: "white",
       }}
     >
