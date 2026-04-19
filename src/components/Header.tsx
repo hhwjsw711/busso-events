@@ -49,10 +49,8 @@ export function Header({ currentRoute }: HeaderProps) {
         borderTop: "none",
         borderLeft: "none",
         borderRight: "none",
-        position: "fixed",
+        position: "sticky",
         top: 0,
-        left: 0,
-        right: 0,
         width: "100%",
         zIndex: 1000,
         backgroundColor: "white",
@@ -143,7 +141,7 @@ export function Header({ currentRoute }: HeaderProps) {
           </Group>
 
           {user && (
-            <Menu shadow="md" width={250} position="bottom-end">
+            <Menu shadow="md" width={250} position="bottom-end" zIndex={1100}>
               <Menu.Target>
                 <Group
                   gap="xs"

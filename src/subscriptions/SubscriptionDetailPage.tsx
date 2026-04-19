@@ -172,7 +172,7 @@ export function SubscriptionDetailPage({
   };
 
   return (
-    <Container size="xl" pt="6rem">
+    <Container size="lg">
       <Group gap="md" mb="xl">
         <ActionIcon variant="subtle" onClick={onBack}>
           <IconArrowLeft size={20} />
