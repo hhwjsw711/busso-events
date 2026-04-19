@@ -28,7 +28,7 @@ export function SubscriptionsPage({
 
   if (subscriptions === undefined) {
     return (
-      <Container size="lg" pt="6rem">
+      <Container size="xl" pt="6rem">
         <Center py="xl">
           <Loader size="lg" />
         </Center>
@@ -37,7 +37,7 @@ export function SubscriptionsPage({
   }
 
   return (
-    <Container size="lg" pt="6rem">
+    <Container size="xl" pt="6rem">
       <Group justify="space-between" mb="xl">
         <Box>
           <Title order={1} size="2.5rem">

@@ -42,7 +42,7 @@ export function CreateSubscriptionPage({
   const onApiError = useAPIErrorHandler();
 
   return (
-    <Container size="lg">
+    <Container size="xl" pt="6rem">
       <Stack gap="lg">
         <Button
           leftSection={<IconArrowLeft size={16} />}
