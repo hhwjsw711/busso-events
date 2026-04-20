@@ -1,0 +1,56 @@
+{
+  "common": {
+    "bussoEvents": "Busso 活动",
+    "signIn": "登录",
+    "signOut": "退出登录",
+    "back": "返回",
+    "events": "活动",
+    "subscriptions": "订阅",
+    "admin": "管理",
+    "loading": "加载中...",
+    "searching": "搜索中...",
+    "searchingWithAI": "AI 搜索中...",
+    "noEventsFound": "未找到活动",
+    "tryAdjustingSearch": "尝试调整搜索词或使用不同的关键词",
+    "checkBackLater": "稍后再来看看新活动",
+    "loadMore": "加载更多",
+    "user": "用户",
+    "adminBadge": "管理员"
+  },
+  "home": {
+    "subtitle": "汇集巴瑟尔顿及西南地区的所有活动",
+    "signInToSubscribe": "登录以订阅活动"
+  },
+  "login": {
+    "title": "欢迎使用 Busso 活动",
+    "subtitle": "登录以管理您的活动订阅",
+    "backToBrowse": "← 返回浏览活动",
+    "signInWithGoogle": "使用 Google 登录",
+    "signUpWithGoogle": "使用 Google 注册"
+  },
+  "search": {
+    "placeholder": "按标题、描述或含义搜索活动...",
+    "semanticTooltip": "使用 AI 语义搜索 + 文本搜索",
+    "textTooltip": "仅使用文本搜索"
+  },
+  "eventDetail": {
+    "notFound": "未找到活动",
+    "backToEvents": "返回活动列表",
+    "eventDate": "活动日期",
+    "originalEvent": "原始活动",
+    "viewOnWebsite": "在网站上查看",
+    "debugEvent": "调试活动"
+  },
+  "dateFilter": {
+    "allEvents": "所有活动",
+    "thisWeek": "本周",
+    "thisMonth": "本月",
+    "next3Months": "未来3个月"
+  },
+  "event": {
+    "free": "免费",
+    "location": "地点",
+    "price": "价格",
+    "category": "类别"
+  }
+}

@@ -1,4 +1,5 @@
 import { Select } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 
 interface DateFilterProps {
   value: "all" | "week" | "month" | "3months";
@@ -6,6 +7,7 @@ interface DateFilterProps {
 }
 
 export function DateFilter({ value, onChange }: DateFilterProps) {
+  const { t } = useTranslation();
   return (
     <Select
       size="md"
@@ -14,10 +16,10 @@ export function DateFilter({ value, onChange }: DateFilterProps) {
         onChange(newValue as "all" | "week" | "month" | "3months")
       }
       data={[
-        { value: "all", label: "All Events" },
-        { value: "week", label: "This Week" },
-        { value: "month", label: "This Month" },
-        { value: "3months", label: "Next 3 Months" },
+        { value: "all", label: t("dateFilter.allEvents") },
+        { value: "week", label: t("dateFilter.thisWeek") },
+        { value: "month", label: t("dateFilter.thisMonth") },
+        { value: "3months", label: t("dateFilter.next3Months") },
       ]}
       style={{ width: "180px" }}
     />

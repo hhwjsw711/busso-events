@@ -1,6 +1,7 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
+import { useTranslation } from "react-i18next";
 import {
   Stack,
   TextInput,
@@ -15,6 +16,7 @@ import { useAPIErrorHandler } from "./utils/hooks";
 import { routes } from "./router";
 
 export function SignInForm() {
+  const { t } = useTranslation();
   const { signIn } = useAuthActions();
   const [flow, setFlow] = useState<"signIn" | "signUp">("signIn");
   const [submitting, setSubmitting] = useState(false);
@@ -91,7 +93,9 @@ export function SignInForm() {
         color="red"
         fullWidth
       >
-        {flow === "signIn" ? "Sign in with Google" : "Sign up with Google"}
+        {flow === "signIn"
+          ? t("login.signInWithGoogle")
+          : t("login.signUpWithGoogle")}
       </Button>
     </Box>
   );

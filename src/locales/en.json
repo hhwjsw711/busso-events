@@ -1,0 +1,56 @@
+{
+  "common": {
+    "bussoEvents": "Busso Events",
+    "signIn": "Sign In",
+    "signOut": "Sign out",
+    "back": "Back",
+    "events": "Events",
+    "subscriptions": "Subscriptions",
+    "admin": "Admin",
+    "loading": "Loading...",
+    "searching": "Searching...",
+    "searchingWithAI": "Searching with AI...",
+    "noEventsFound": "No events found",
+    "tryAdjustingSearch": "Try adjusting your search terms or use different keywords",
+    "checkBackLater": "Check back later for new events",
+    "loadMore": "Load More",
+    "user": "User",
+    "adminBadge": "Admin"
+  },
+  "home": {
+    "subtitle": "All the Events for Busselton and the South West, in one place",
+    "signInToSubscribe": "Sign In To Subscribe to Events"
+  },
+  "login": {
+    "title": "Welcome to Busso Events",
+    "subtitle": "Sign in to manage your event subscriptions",
+    "backToBrowse": "← Back to browse events",
+    "signInWithGoogle": "Sign in with Google",
+    "signUpWithGoogle": "Sign up with Google"
+  },
+  "search": {
+    "placeholder": "Search events by title, description, or meaning...",
+    "semanticTooltip": "Using AI-powered semantic search + text search",
+    "textTooltip": "Using text search only"
+  },
+  "eventDetail": {
+    "notFound": "Event not found",
+    "backToEvents": "Back to Events",
+    "eventDate": "Event Date",
+    "originalEvent": "Original Event",
+    "viewOnWebsite": "View on Website",
+    "debugEvent": "Debug Event"
+  },
+  "dateFilter": {
+    "allEvents": "All Events",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "next3Months": "Next 3 Months"
+  },
+  "event": {
+    "free": "Free",
+    "location": "Location",
+    "price": "Price",
+    "category": "Category"
+  }
+}

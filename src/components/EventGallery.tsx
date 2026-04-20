@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { EventCard } from "../events/EventCard";
 import { Id, Doc } from "../../convex/_generated/dataModel";
 import { useAPIErrorHandler } from "../utils/hooks";
+import { useTranslation } from "react-i18next";
 import {
   Stack,
   Group,
@@ -28,6 +29,7 @@ export function EventGallery({
   searchTerm,
   dateFilter,
 }: EventGalleryProps) {
+  const { t } = useTranslation();
   const [searchEvents, setSearchEvents] = useState<Doc<"events">[] | undefined>(
     undefined,
   );
@@ -118,7 +120,9 @@ export function EventGallery({
           <Group>
             <Loader size="sm" />
             <Text size="sm" c="dimmed">
-              {isSemanticSearch ? "Searching with AI..." : "Searching..."}
+              {isSemanticSearch
+                ? t("common.searchingWithAI")
+                : t("common.searching")}
             </Text>
           </Group>
         </Center>
@@ -135,12 +139,12 @@ export function EventGallery({
             🔍
           </Text>
           <Title order={3} mb="xs">
-            No events found
+            {t("common.noEventsFound")}
           </Title>
           <Text c="dimmed">
             {searchTerm
-              ? "Try adjusting your search terms or use different keywords"
-              : "Check back later for new events"}
+              ? t("common.tryAdjustingSearch")
+              : t("common.checkBackLater")}
           </Text>
         </Card>
       ) : (
@@ -169,8 +173,8 @@ export function EventGallery({
                     size="md"
                   >
                     {paginationStatus === "LoadingMore"
-                      ? "Loading..."
-                      : "Load More"}
+                      ? t("common.loading")
+                      : t("common.loadMore")}
                   </Button>
                 </Center>
               )}

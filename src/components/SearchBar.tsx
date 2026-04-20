@@ -1,5 +1,6 @@
 import { TextInput, ActionIcon, Tooltip } from "@mantine/core";
 import { IconSearch, IconX, IconBrain } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 interface SearchBarProps {
   searchTerm: string;
@@ -7,19 +8,20 @@ interface SearchBarProps {
 }
 
 export function SearchBar({ searchTerm, onSearchChange }: SearchBarProps) {
+  const { t } = useTranslation();
   const isSemanticSearch = searchTerm.trim().length > 3;
 
   return (
     <TextInput
-      placeholder="Search events by title, description, or meaning..."
+      placeholder={t("search.placeholder")}
       value={searchTerm}
       onChange={(e) => onSearchChange(e.currentTarget.value)}
       leftSection={
         <Tooltip
           label={
             isSemanticSearch
-              ? "Using AI-powered semantic search + text search"
-              : "Using text search only"
+              ? t("search.semanticTooltip")
+              : t("search.textTooltip")
           }
           position="bottom"
         >

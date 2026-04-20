@@ -4,6 +4,8 @@ import { routes } from "../router";
 import { useState, useEffect } from "react";
 import { useConvexAuth, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import {
   Container,
   Group,
@@ -15,11 +17,13 @@ import {
   Center,
   Box,
   Image,
+  Menu,
 } from "@mantine/core";
 import { SearchBar } from "./SearchBar";
 import { DateFilter } from "./DateFilter";
 
 export function HomePage() {
+  const { t } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const { isAuthenticated } = useConvexAuth();
   const user = useQuery(api.auth.loggedInUser);
@@ -59,12 +63,35 @@ export function HomePage() {
           <Group gap="sm" align="center">
             <Image src="/logo-128.png" alt="Busso Events Logo" w={24} h={24} />
             <Text size="1.25rem" fw={500}>
-              Busso Events
+              {t("common.bussoEvents")}
             </Text>
           </Group>
-          <Button {...routes.login().link} size="md">
-            Sign In
-          </Button>
+          <Group gap="sm">
+            <Menu shadow="md" width={120} position="bottom-end" zIndex={1100}>
+              <Menu.Target>
+                <Button variant="subtle" size="sm">
+                  🌐 {i18n.language === "en" ? "EN" : "中文"}
+                </Button>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  onClick={() => i18n.changeLanguage("en")}
+                  fw={i18n.language === "en" ? 600 : 400}
+                >
+                  English
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => i18n.changeLanguage("zh")}
+                  fw={i18n.language === "zh" ? 600 : 400}
+                >
+                  中文
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+            <Button {...routes.login().link} size="md">
+              {t("common.signIn")}
+            </Button>
+          </Group>
         </Group>
       </Container>
     </div>
@@ -87,15 +114,15 @@ export function HomePage() {
           style={{ paddingTop: "14rem" }}
         >
           <Title order={1} size="5rem" fw={700} c="white">
-            Busso Events
+            {t("common.bussoEvents")}
           </Title>
         </Group>
         <Text size="xl" c="gray.3" style={{ marginBottom: "1rem" }}>
-          All the Events for Busselton and the South West, in one place
+          {t("home.subtitle")}
         </Text>
         {!isAuthenticated && (
           <Button {...routes.login().link} color="blue" size="md">
-            Sign In To Subscribe to Events
+            {t("home.signInToSubscribe")}
           </Button>
         )}
       </Stack>

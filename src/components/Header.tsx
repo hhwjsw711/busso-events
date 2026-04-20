@@ -2,6 +2,8 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { routes } from "../router";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import {
   Group,
   Text,
@@ -21,6 +23,7 @@ interface HeaderProps {
 }
 
 export function Header({ currentRoute }: HeaderProps) {
+  const { t } = useTranslation();
   const user = useQuery(api.auth.loggedInUser);
   const isAdmin = useQuery(api.users.isCurrentUserAdmin);
   const { signOut } = useAuthActions();
@@ -74,7 +77,7 @@ export function Header({ currentRoute }: HeaderProps) {
                 />
               }
             >
-              Busso Events
+              {t("common.bussoEvents")}
             </Button>
 
             <Group gap="lg">
@@ -89,7 +92,7 @@ export function Header({ currentRoute }: HeaderProps) {
                       : "none",
                 }}
               >
-                Events
+                {t("common.events")}
               </Button>
 
               <Button
@@ -109,7 +112,7 @@ export function Header({ currentRoute }: HeaderProps) {
                       : "none",
                 }}
               >
-                Subscriptions
+                {t("common.subscriptions")}
               </Button>
 
               {isAdmin && (
@@ -134,77 +137,100 @@ export function Header({ currentRoute }: HeaderProps) {
                       : "none",
                   }}
                 >
-                  Admin
+                  {t("common.admin")}
                 </Button>
               )}
             </Group>
           </Group>
 
-          {user && (
-            <Menu shadow="md" width={250} position="bottom-end" zIndex={1100}>
+          <Group gap="sm">
+            <Menu shadow="md" width={120} position="bottom-end" zIndex={1100}>
               <Menu.Target>
-                <Group
-                  gap="xs"
-                  style={{
-                    cursor: "pointer",
-                    padding: "4px 8px",
-                    borderRadius: "8px",
-                    transition: "background-color 0.15s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--mantine-color-gray-0)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                  }}
-                >
-                  <Avatar size="md" radius="xl" color="blue">
-                    {getUserInitials()}
-                  </Avatar>
-                  <IconChevronDown
-                    size={16}
-                    color="var(--mantine-color-gray-6)"
-                  />
-                </Group>
+                <Button variant="subtle" size="sm">
+                  🌐 {i18n.language === "en" ? "EN" : "中文"}
+                </Button>
               </Menu.Target>
-
               <Menu.Dropdown>
                 <Menu.Item
-                  leftSection={
-                    <IconUser style={{ width: rem(14), height: rem(14) }} />
-                  }
-                  disabled
+                  onClick={() => i18n.changeLanguage("en")}
+                  fw={i18n.language === "en" ? 600 : 400}
                 >
-                  <div>
-                    <Text size="sm" fw={500}>
-                      {user.name || "User"}
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                      {user.email}
-                    </Text>
-                    {isAdmin && (
-                      <Badge color="blue" size="xs" mt="2px">
-                        Admin
-                      </Badge>
-                    )}
-                  </div>
+                  English
                 </Menu.Item>
-
-                <Menu.Divider />
-
                 <Menu.Item
-                  leftSection={
-                    <IconLogout style={{ width: rem(14), height: rem(14) }} />
-                  }
-                  onClick={() => void signOut()}
-                  color="red"
+                  onClick={() => i18n.changeLanguage("zh")}
+                  fw={i18n.language === "zh" ? 600 : 400}
                 >
-                  Sign out
+                  中文
                 </Menu.Item>
               </Menu.Dropdown>
             </Menu>
-          )}
+            {user && (
+              <Menu shadow="md" width={250} position="bottom-end" zIndex={1100}>
+                <Menu.Target>
+                  <Group
+                    gap="xs"
+                    style={{
+                      cursor: "pointer",
+                      padding: "4px 8px",
+                      borderRadius: "8px",
+                      transition: "background-color 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--mantine-color-gray-0)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
+                  >
+                    <Avatar size="md" radius="xl" color="blue">
+                      {getUserInitials()}
+                    </Avatar>
+                    <IconChevronDown
+                      size={16}
+                      color="var(--mantine-color-gray-6)"
+                    />
+                  </Group>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Item
+                    leftSection={
+                      <IconUser style={{ width: rem(14), height: rem(14) }} />
+                    }
+                    disabled
+                  >
+                    <div>
+                      <Text size="sm" fw={500}>
+                        {user.name || t("common.user")}
+                      </Text>
+                      <Text size="xs" c="dimmed">
+                        {user.email}
+                      </Text>
+                      {isAdmin && (
+                        <Badge color="blue" size="xs" mt="2px">
+                          {t("common.adminBadge")}
+                        </Badge>
+                      )}
+                    </div>
+                  </Menu.Item>
+
+                  <Menu.Divider />
+
+                  <Menu.Item
+                    leftSection={
+                      <IconLogout style={{ width: rem(14), height: rem(14) }} />
+                    }
+                    onClick={() => void signOut()}
+                    color="red"
+                  >
+                    {t("common.signOut")}
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            )}
+          </Group>
         </Group>
       </Container>
     </Paper>

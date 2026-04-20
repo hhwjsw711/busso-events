@@ -3,6 +3,7 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { formatEventDate } from "../utils/dateUtils";
 import { EventDescription } from "./EventDescription";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Card,
@@ -34,6 +35,7 @@ export function EventDetailPage({
   onBack,
   onDebugClick,
 }: EventDetailPageProps) {
+  const { t } = useTranslation();
   const event = useQuery(api.events.events.getById, {
     id: eventId as Id<"events">,
   });
@@ -50,13 +52,13 @@ export function EventDetailPage({
     return (
       <Center py="xl" style={{ textAlign: "center" }}>
         <Stack gap="md">
-          <Title order={3}>Event not found</Title>
+          <Title order={3}>{t("eventDetail.notFound")}</Title>
           <Button
             leftSection={<IconArrowLeft size={16} />}
             variant="subtle"
             onClick={onBack}
           >
-            Back to Events
+            {t("eventDetail.backToEvents")}
           </Button>
         </Stack>
       </Center>
@@ -72,12 +74,12 @@ export function EventDetailPage({
             variant="subtle"
             onClick={onBack}
           >
-            Back to Events
+            {t("eventDetail.backToEvents")}
           </Button>
 
           {onDebugClick && (
             <Button onClick={onDebugClick} color="yellow">
-              🔧 Debug Event
+              {t("eventDetail.debugEvent")}
             </Button>
           )}
         </Group>
@@ -112,7 +114,7 @@ export function EventDetailPage({
                 <IconCalendar size={20} color="var(--mantine-color-blue-6)" />
                 <Box>
                   <Text fw={500} size="sm" c="dimmed">
-                    Event Date
+                    {t("eventDetail.eventDate")}
                   </Text>
                   <Text size="lg">{formatEventDate(event.eventDate)}</Text>
                 </Box>
@@ -131,10 +133,10 @@ export function EventDetailPage({
                     <IconExternalLink size={20} />
                     <Box>
                       <Text fw={500} size="sm" c="dimmed">
-                        Original Event
+                        {t("eventDetail.originalEvent")}
                       </Text>
                       <Text size="lg" c="blue.6">
-                        View on Website
+                        {t("eventDetail.viewOnWebsite")}
                       </Text>
                     </Box>
                   </Group>
