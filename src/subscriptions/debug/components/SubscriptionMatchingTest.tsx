@@ -260,13 +260,13 @@ export function SubscriptionMatchingTest({
         <Text size="sm" c="blue.8">
           💡{" "}
           <Text span fw={500}>
-            Preview Matches
+            {t("subscriptionDebug.previewMatches")}
           </Text>{" "}
-          shows what events would match this subscription based on current data.{" "}
+          {t("subscriptionDebug.previewMatchesDescription")}{" "}
           <Text span fw={500}>
-            Test Matching
+            {t("subscriptionDebug.testMatching")}
           </Text>{" "}
-          runs the actual matching algorithm and processes any matches found.
+          {t("subscriptionDebug.testMatchingDescription")}
         </Text>
       </Card>
     </Card>

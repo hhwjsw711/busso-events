@@ -18,7 +18,11 @@
     "adminBadge": "Admin",
     "pageNotFound": "Page not found",
     "pageNotFoundDescription": "The page you're looking for doesn't exist.",
-    "goToHome": "Go to Home"
+    "goToHome": "Go to Home",
+    "active": "Active",
+    "inactive": "Inactive",
+    "success": "Success",
+    "error": "Error"
   },
   "home": {
     "subtitle": "All the Events for Busselton and the South West, in one place",
@@ -163,6 +167,7 @@
     "needScraping": "Need Scraping:",
     "manageSources": "Manage Sources",
     "fixMissingSchedules": "Fix Missing Schedules",
+    "fixSchedulesConfirm": "This will schedule next scrapes for all sources that don't have one. Are you sure?",
     "checking": "Checking...",
     "systemOperations": "System Operations",
     "generateMissingEmbeddings": "Generate Missing Embeddings",
@@ -183,7 +188,21 @@
     "batchSourceScraping": "Batch Source Scraping",
     "duration": "Duration: {{minutes}}m",
     "notificationTesting": "Notification Testing",
+    "success": "Success",
+    "warning": "Warning",
     "testNotificationDescription": "Test different types of notifications to ensure they're working properly",
+    "deleteAllEventsConfirm": "This will delete ALL events from the database. This action cannot be undone. Are you sure?",
+    "deleteAllEventsFinal": "FINAL WARNING: This will permanently delete ALL events. Type 'DELETE ALL' to confirm:",
+    "cancelled": "Cancelled",
+    "deletionCancelled": "Deletion cancelled - confirmation text did not match",
+    "successfullyDeleted": "Successfully deleted {{count}} events",
+    "failedToDelete": "Failed to delete {{count}} events",
+    "clearAllWorkpoolsConfirm": "This will clear all pending jobs from all workpools. Are you sure?",
+    "clearAllWorkpoolsSuccess": "Successfully cleared {{count}} jobs from all workpools",
+    "failedToClear": "Failed to clear {{count}} jobs",
+    "fixSchedulesConfirm": "This will schedule next scrapes for all sources that don't have one. Are you sure?",
+    "fixSchedulesSuccess": "Checked {{checked}} sources and fixed {{fixed}} missing schedules",
+    "someSourcesFailed": "Some Sources Failed",
     "testSuccess": "Success!",
     "successNotification": "This is a success notification",
     "testError": "Error!",
@@ -433,6 +452,8 @@
     "moreEvents": "... and {{count}} more events",
     "match": "Match",
     "promptBased": "Prompt-based",
+    "previewMatchesDescription": "Preview Matches shows what events would match this subscription based on current data.",
+    "testMatchingDescription": "Test Matching runs the actual matching algorithm and processes any matches found.",
     "subscriptionStats": {
       "title": "Subscription Statistics",
       "totalSubscriptions": "Total Subscriptions",
@@ -458,5 +479,18 @@
     "eventEmbeddingWorkpool": "Generates semantic vectors for event descriptions",
     "subscriptionMatchWorkpool": "Matches subscriptions with events",
     "subscriptionEmailWorkpool": "Sends event notification emails to subscribers"
+  },
+  "subscriptionStats": {
+    "title": "Subscription Statistics",
+    "totalSubscriptions": "Total Subscriptions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "queuedEvents": "Queued Events",
+    "subscriptionTypes": "Subscription Types",
+    "promptBased": "Prompt-based",
+    "allEvents": "All Events",
+    "readyForEmail": "Ready for Email",
+    "uniqueUsers": "Unique Users",
+    "avgEmailFrequency": "Avg Email Frequency"
   }
 }
