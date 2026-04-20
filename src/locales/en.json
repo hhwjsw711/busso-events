@@ -15,7 +15,10 @@
     "checkBackLater": "Check back later for new events",
     "loadMore": "Load More",
     "user": "User",
-    "adminBadge": "Admin"
+    "adminBadge": "Admin",
+    "pageNotFound": "Page not found",
+    "pageNotFoundDescription": "The page you're looking for doesn't exist.",
+    "goToHome": "Go to Home"
   },
   "home": {
     "subtitle": "All the Events for Busselton and the South West, in one place",

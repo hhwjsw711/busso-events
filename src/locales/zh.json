@@ -15,7 +15,10 @@
     "checkBackLater": "稍后再来看看新活动",
     "loadMore": "加载更多",
     "user": "用户",
-    "adminBadge": "管理员"
+    "adminBadge": "管理员",
+    "pageNotFound": "页面未找到",
+    "pageNotFoundDescription": "您查找的页面不存在。",
+    "goToHome": "返回首页"
   },
   "home": {
     "subtitle": "汇集巴瑟尔顿及西南地区的所有活动",
