@@ -4,6 +4,7 @@ import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { useAPIErrorHandler } from "../utils/hooks";
 import { formatDateDetailed as formatDate } from "../utils/dateUtils";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Title,
@@ -46,6 +47,7 @@ export function WorkpoolDebugPage({
   onBack,
   onNavigateToEventDebug,
 }: WorkpoolDebugPageProps) {
+  const { t } = useTranslation();
   const workpoolStatus = useQuery(
     api.events.eventsAdmin.getWorkpoolDetailedStatus,
     {
@@ -93,9 +95,9 @@ export function WorkpoolDebugPage({
             onClick={onBack}
             style={{ alignSelf: "flex-start" }}
           >
-            Back to Admin Dashboard
+            {t("workpoolDebug.backToAdmin")}
           </Button>
-          <Text>Loading workpool status...</Text>
+          <Text>{t("workpoolDebug.loadingStatus")}</Text>
         </Stack>
       </Container>
     );
@@ -110,7 +112,7 @@ export function WorkpoolDebugPage({
           onClick={onBack}
           style={{ alignSelf: "flex-start" }}
         >
-          Back to Admin Dashboard
+          {t("workpoolDebug.backToAdmin")}
         </Button>
 
         {/* Workpool Header */}
@@ -123,7 +125,9 @@ export function WorkpoolDebugPage({
                   {workpoolStatus.name}
                 </Title>
                 <Badge color={getWorkpoolColor(workpoolType)} size="lg">
-                  {workpoolStatus.totalJobs} queued
+                  {t("workpoolDebug.queued", {
+                    count: workpoolStatus.totalJobs,
+                  })}
                 </Badge>
               </Group>
               <Text c="dimmed" size="lg" mb="md">
@@ -136,7 +140,7 @@ export function WorkpoolDebugPage({
                 leftSection={<IconRefresh size={16} />}
                 variant="light"
               >
-                Refresh
+                {t("workpoolDebug.refresh")}
               </Button>
               <Button
                 onClick={() => {
@@ -145,12 +149,14 @@ export function WorkpoolDebugPage({
                     .then((result) => {
                       if (result.success) {
                         notifications.show({
-                          message: result.message,
+                          message: t("workpoolDebug.clearSuccess", {
+                            count: result.clearedCount || 0,
+                          }),
                           color: "green",
                         });
                       } else {
                         notifications.show({
-                          message: "Failed to clear workpool jobs",
+                          message: t("workpoolDebug.clearFailed"),
                           color: "red",
                         });
                       }
@@ -163,7 +169,9 @@ export function WorkpoolDebugPage({
                 leftSection={<IconTrash size={16} />}
                 loading={isClearing}
               >
-                {isClearing ? "Clearing..." : "Clear All Jobs"}
+                {isClearing
+                  ? t("workpoolDebug.clearing")
+                  : t("workpoolDebug.clearAllJobs")}
               </Button>
             </Group>
           </Group>
@@ -175,14 +183,14 @@ export function WorkpoolDebugPage({
             <Group gap="sm" mb="xs">
               <IconCpu size={20} color="var(--mantine-color-blue-6)" />
               <Text fw={500} size="sm">
-                Max Parallelism
+                {t("workpoolDebug.maxParallelism")}
               </Text>
             </Group>
             <Text size="xl" fw={700} c="blue.6">
               {workpoolStatus.maxParallelism}
             </Text>
             <Text size="xs" c="dimmed">
-              Maximum concurrent jobs
+              {t("workpoolDebug.maxConcurrent")}
             </Text>
           </Card>
 
@@ -190,14 +198,14 @@ export function WorkpoolDebugPage({
             <Group gap="sm" mb="xs">
               <IconClock size={20} color="var(--mantine-color-orange-6)" />
               <Text fw={500} size="sm">
-                Total Jobs
+                {t("workpoolDebug.totalJobs")}
               </Text>
             </Group>
             <Text size="xl" fw={700} c="orange.6">
               {workpoolStatus.totalJobs}
             </Text>
             <Text size="xs" c="dimmed">
-              Jobs currently queued
+              {t("workpoolDebug.jobsQueued")}
             </Text>
           </Card>
 
@@ -205,14 +213,14 @@ export function WorkpoolDebugPage({
             <Group gap="sm" mb="xs">
               <IconInfoCircle size={20} color="var(--mantine-color-green-6)" />
               <Text fw={500} size="sm">
-                Workpool Type
+                {t("workpoolDebug.workpoolType")}
               </Text>
             </Group>
             <Text size="lg" fw={500} c="green.6">
               {workpoolType}
             </Text>
             <Text size="xs" c="dimmed">
-              Component identifier
+              {t("workpoolDebug.componentId")}
             </Text>
           </Card>
         </SimpleGrid>
@@ -220,26 +228,26 @@ export function WorkpoolDebugPage({
         {/* Jobs Table */}
         <Card shadow="sm" padding="xl" radius="lg" withBorder>
           <Group justify="space-between" align="center" mb="lg">
-            <Title order={2}>Queued Jobs</Title>
+            <Title order={2}>{t("workpoolDebug.queuedJobsTitle")}</Title>
             <Badge color="gray" size="lg">
-              {workpoolStatus.totalJobs} total
+              {workpoolStatus.totalJobs} {t("workpoolDebug.total")}
             </Badge>
           </Group>
 
           {workpoolStatus.totalJobs === 0 ? (
             <Alert icon={<IconInfoCircle size={16} />} color="blue">
-              No jobs currently queued in this workpool.
+              {t("workpoolDebug.noJobs")}
             </Alert>
           ) : (
             <Box style={{ overflowX: "auto" }}>
               <Table striped highlightOnHover>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Event</Table.Th>
-                    <Table.Th>Work ID</Table.Th>
-                    <Table.Th>Enqueued At</Table.Th>
-                    <Table.Th>Event Date</Table.Th>
-                    <Table.Th>Actions</Table.Th>
+                    <Table.Th>{t("workpoolDebug.event")}</Table.Th>
+                    <Table.Th>{t("workpoolDebug.workId")}</Table.Th>
+                    <Table.Th>{t("workpoolDebug.enqueuedAt")}</Table.Th>
+                    <Table.Th>{t("workpoolDebug.eventDate")}</Table.Th>
+                    <Table.Th>{t("workpoolDebug.actions")}</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
@@ -261,12 +269,14 @@ export function WorkpoolDebugPage({
                       </Table.Td>
                       <Table.Td>
                         <Text ff="monospace" size="xs">
-                          {job.workId || "N/A"}
+                          {job.workId || t("workpoolDebug.na")}
                         </Text>
                       </Table.Td>
                       <Table.Td>
                         <Text size="sm">
-                          {job.enqueuedAt ? formatDate(job.enqueuedAt) : "N/A"}
+                          {job.enqueuedAt
+                            ? formatDate(job.enqueuedAt)
+                            : t("workpoolDebug.na")}
                         </Text>
                       </Table.Td>
                       <Table.Td>
@@ -294,37 +304,34 @@ export function WorkpoolDebugPage({
         {/* Workpool Information */}
         <Card shadow="sm" padding="xl" radius="lg" withBorder>
           <Title order={3} mb="md">
-            How This Workpool Works
+            {t("workpoolDebug.howItWorks")}
           </Title>
           <Stack gap="sm">
             <Text size="sm">
               <Text span fw={500}>
-                Maximum Parallelism:
+                {t("workpoolDebug.maxParallelism")}:
               </Text>{" "}
-              This workpool can process up to {workpoolStatus.maxParallelism}{" "}
-              job(s) simultaneously to balance performance with resource
-              constraints.
+              {t("workpoolDebug.maxParallelismDesc", {
+                max: workpoolStatus.maxParallelism,
+              })}
             </Text>
             <Text size="sm">
               <Text span fw={500}>
-                Job Processing:
+                {t("workpoolDebug.jobProcessing")}:
               </Text>{" "}
-              Jobs are processed in a first-in, first-out (FIFO) order, ensuring
-              consistent and predictable execution.
+              {t("workpoolDebug.jobProcessingDesc")}
             </Text>
             <Text size="sm">
               <Text span fw={500}>
-                Retry Logic:
+                {t("workpoolDebug.retryLogic")}:
               </Text>{" "}
-              Failed jobs are automatically retried with exponential backoff to
-              handle temporary failures gracefully.
+              {t("workpoolDebug.retryLogicDesc")}
             </Text>
             <Text size="sm">
               <Text span fw={500}>
-                Monitoring:
+                {t("workpoolDebug.monitoring")}:
               </Text>{" "}
-              Each job's status can be monitored individually through the event
-              debug pages for detailed diagnostics.
+              {t("workpoolDebug.monitoringDesc")}
             </Text>
           </Stack>
         </Card>

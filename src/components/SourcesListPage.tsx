@@ -2,6 +2,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id, Doc } from "../../convex/_generated/dataModel";
 import { formatDate } from "../utils/dateUtils";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Title,
@@ -28,6 +29,7 @@ export function SourcesListPage({
   onNavigateToAddSource,
   onNavigateToSourceDetail,
 }: SourcesListPageProps) {
+  const { t } = useTranslation();
   const sources = useQuery(api.eventSources.eventSourcesAdmin.list);
 
   if (sources === undefined) {
@@ -47,20 +49,20 @@ export function SourcesListPage({
           onClick={onBack}
           style={{ alignSelf: "flex-start" }}
         >
-          Back to Admin
+          {t("admin.sources.backToAdmin")}
         </Button>
 
         <Group justify="space-between">
           <Box>
             <Title order={1} size="2.5rem">
-              Event Sources
+              {t("admin.sources.title")}
             </Title>
             <Text c="dimmed" mt="xs">
-              Manage sources for event scraping
+              {t("admin.sources.description")}
             </Text>
           </Box>
           <Button onClick={onNavigateToAddSource} size="lg">
-            + Add Source
+            {t("admin.sources.addSource")}
           </Button>
         </Group>
 
@@ -75,13 +77,13 @@ export function SourcesListPage({
               🌐
             </Text>
             <Title order={3} mb="xs">
-              No sources configured
+              {t("admin.sources.noSourcesConfigured")}
             </Title>
             <Text c="dimmed" mb="lg">
-              Add your first event source to start scraping events
+              {t("admin.sources.noSourcesDescription")}
             </Text>
             <Button onClick={onNavigateToAddSource} size="lg">
-              Add Your First Source
+              {t("admin.sources.addFirstSource")}
             </Button>
           </Card>
         ) : (
@@ -109,7 +111,9 @@ export function SourcesListPage({
                         color={source.isActive ? "green" : "gray"}
                         size="sm"
                       >
-                        {source.isActive ? "Active" : "Inactive"}
+                        {source.isActive
+                          ? t("common.active")
+                          : t("admin.sources.inactive")}
                       </Badge>
                     </Group>
 
@@ -126,7 +130,7 @@ export function SourcesListPage({
                       </Text>
                       <Group gap="xs">
                         <Text fw={500} size="sm">
-                          Last scraped:
+                          {t("admin.sources.lastScraped")}
                         </Text>
                         <Text size="sm" c="dimmed">
                           {formatDate(source.dateLastScrape)}
@@ -134,7 +138,7 @@ export function SourcesListPage({
                       </Group>
                       <Group gap="xs">
                         <Text fw={500} size="sm">
-                          Next scrape:
+                          {t("admin.sources.nextScrape")}
                         </Text>
                         <Text
                           size="sm"
@@ -154,8 +158,8 @@ export function SourcesListPage({
                           {source.nextScrapeScheduledAt
                             ? formatDate(source.nextScrapeScheduledAt)
                             : source.isActive
-                              ? "Not scheduled"
-                              : "Inactive"}
+                              ? t("admin.sources.notScheduled")
+                              : t("admin.sources.inactive")}
                         </Text>
                       </Group>
                     </Stack>
@@ -164,7 +168,7 @@ export function SourcesListPage({
                   <Box style={{ minWidth: "120px" }}>
                     <Button
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent card click
+                        e.stopPropagation();
                         onNavigateToSourceDetail(source._id);
                       }}
                       variant="light"
@@ -172,7 +176,7 @@ export function SourcesListPage({
                       size="sm"
                       leftSection={<IconSearch size={16} />}
                     >
-                      View Details
+                      {t("admin.sources.viewDetails")}
                     </Button>
                   </Box>
                 </Group>

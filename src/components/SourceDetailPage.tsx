@@ -4,6 +4,7 @@ import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { useAPIErrorHandler } from "../utils/hooks";
 import { EventDescription } from "../events/EventDescription";
+import { useTranslation } from "react-i18next";
 import {
   formatDate,
   formatDateShort,
@@ -60,6 +61,7 @@ interface SourceDetailPageProps {
 }
 
 export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
+  const { t } = useTranslation();
   const source = useQuery(api.eventSources.eventSourcesAdmin.getById, {
     sourceId: sourceId as Id<"eventSources">,
   });
@@ -106,15 +108,14 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
             onClick={onBack}
             style={{ alignSelf: "flex-start" }}
           >
-            Back to Sources
+            {t("admin.sources.detail.backToSources")}
           </Button>
           <Alert
             icon={<IconAlertCircle size={16} />}
-            title="Source not found"
+            title={t("admin.sources.detail.sourceNotFound")}
             color="red"
           >
-            The event source you're looking for doesn't exist or has been
-            deleted.
+            {t("admin.sources.detail.sourceNotFoundDescription")}
           </Alert>
         </Stack>
       </Container>
@@ -132,7 +133,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
           onClick={onBack}
           style={{ alignSelf: "flex-start" }}
         >
-          Back to Sources
+          {t("admin.sources.detail.backToSources")}
         </Button>
 
         {/* Source Header */}
@@ -146,7 +147,9 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                 style={{ borderRadius: "50%" }}
               />
               <Badge color={source.isActive ? "green" : "gray"} size="lg">
-                {source.isActive ? "Active" : "Inactive"}
+                {source.isActive
+                  ? t("common.active")
+                  : t("admin.sources.detail.inactive")}
               </Badge>
             </Group>
             <Title order={1} size="2.5rem" mb="xs">
@@ -166,18 +169,18 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
               </Anchor>
             </Group>
             <Text c="dimmed">
-              Last scraped:{" "}
+              {t("admin.sources.detail.lastScraped")}{" "}
               {source.dateLastScrape
                 ? formatDate(source.dateLastScrape)
-                : "Never"}
+                : t("admin.sources.detail.never")}
             </Text>
             <Text c="dimmed">
-              Next scrape:{" "}
+              {t("admin.sources.detail.nextScraped")}{" "}
               {source.nextScrapeScheduledAt
                 ? formatDate(source.nextScrapeScheduledAt)
                 : source.isActive
-                  ? "Not scheduled"
-                  : "Inactive"}
+                  ? t("admin.sources.detail.notScheduled")
+                  : t("admin.sources.detail.inactive")}
             </Text>
           </Box>
 
@@ -190,7 +193,9 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                 })
                   .then(() => {
                     notifications.show({
-                      message: `Source ${!source.isActive ? "activated" : "deactivated"}`,
+                      message: source.isActive
+                        ? t("admin.sources.detail.sourceDeactivated")
+                        : t("admin.sources.detail.sourceActivated"),
                       color: "green",
                     });
                   })
@@ -206,7 +211,9 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                 )
               }
             >
-              {source.isActive ? "Pause Source" : "Activate Source"}
+              {source.isActive
+                ? t("admin.sources.detail.deactivateSource")
+                : t("admin.sources.detail.activateSource")}
             </Button>
 
             <Button
@@ -216,12 +223,16 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                   .then((result) => {
                     if (result.success) {
                       notifications.show({
-                        message: `Scrape completed! Found ${result.eventsFound || 0} events.`,
+                        message: t("admin.sources.detail.scrapeCompleted", {
+                          count: result.eventsFound || 0,
+                        }),
                         color: "green",
                       });
                     } else {
                       notifications.show({
-                        message: `Scrape failed: ${result.message}`,
+                        message: t("admin.sources.detail.scrapeFailed", {
+                          message: result.message,
+                        }),
                         color: "red",
                       });
                     }
@@ -234,7 +245,9 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
               loading={isScrapingNow}
               disabled={!source.isActive || isScrapingNow}
             >
-              {isScrapingNow ? "Scraping..." : "Scrape Now"}
+              {isScrapingNow
+                ? t("admin.sources.detail.scraping")
+                : t("admin.sources.detail.scrapeNow")}
             </Button>
 
             <Button
@@ -247,25 +260,20 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
               color="blue"
               leftSection={<IconEdit size={16} />}
             >
-              Edit Source
+              {t("admin.sources.detail.editSource")}
             </Button>
 
             <Button
               onClick={() => {
-                if (
-                  !confirm(
-                    "Are you sure you want to delete this source? This action cannot be undone.",
-                  )
-                )
-                  return;
+                if (!confirm(t("admin.sources.detail.deleteConfirm"))) return;
 
                 deleteSource({ id: source._id })
                   .then(() => {
                     notifications.show({
-                      message: "Source deleted successfully",
+                      message: t("admin.sources.detail.deletedSuccess"),
                       color: "green",
                     });
-                    onBack(); // Navigate back to sources list
+                    onBack();
                   })
                   .catch(onApiError);
               }}
@@ -273,7 +281,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
               color="red"
               leftSection={<IconTrash size={16} />}
             >
-              Delete Source
+              {t("admin.sources.detail.deleteSource")}
             </Button>
           </Group>
         </Group>
@@ -284,7 +292,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Total Events
+                  {t("admin.sources.detail.totalEvents")}
                 </Text>
                 <Text size="xl" fw={700} c="blue.6">
                   {stats.totalEvents}
@@ -300,7 +308,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Upcoming
+                  {t("admin.sources.detail.upcoming")}
                 </Text>
                 <Text size="xl" fw={700} c="green.6">
                   {stats.upcomingEvents}
@@ -316,7 +324,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Past Events
+                  {t("admin.sources.detail.pastEvents")}
                 </Text>
                 <Text size="xl" fw={700} c="gray.6">
                   {stats.pastEvents}
@@ -332,12 +340,12 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Date Range
+                  {t("admin.sources.detail.dateRange")}
                 </Text>
                 <Text size="sm" fw={500}>
                   {stats.oldestEvent && stats.newestEvent
                     ? `${formatDateShort(stats.oldestEvent)} - ${formatDateShort(stats.newestEvent)}`
-                    : "No events"}
+                    : t("admin.sources.detail.noEvents")}
                 </Text>
               </Box>
               <ThemeIcon variant="light" size={32} radius="md" color="violet">
@@ -352,7 +360,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
         {/* Events List */}
         <Box>
           <Title order={2} mb="lg">
-            Events from this Source
+            {t("admin.sources.detail.eventsFromThisSource")}
           </Title>
 
           {events.length === 0 ? (
@@ -367,11 +375,10 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                 📅
               </Text>
               <Title order={3} mb="xs">
-                No events found
+                {t("admin.sources.detail.noEventsFound")}
               </Title>
               <Text c="dimmed">
-                This source hasn't scraped any events yet. Try running a scrape
-                to discover events.
+                {t("admin.sources.detail.noEventsDescription")}
               </Text>
             </Card>
           ) : (
@@ -379,11 +386,21 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
               <Table striped highlightOnHover>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th style={{ width: "80px" }}>Image</Table.Th>
-                    <Table.Th style={{ width: "40%" }}>Event</Table.Th>
-                    <Table.Th style={{ width: "18%" }}>Date</Table.Th>
-                    <Table.Th style={{ width: "18%" }}>Last Scraped</Table.Th>
-                    <Table.Th style={{ width: "14%" }}>Embeddings</Table.Th>
+                    <Table.Th style={{ width: "80px" }}>
+                      {t("admin.sources.detail.image")}
+                    </Table.Th>
+                    <Table.Th style={{ width: "40%" }}>
+                      {t("admin.sources.detail.event")}
+                    </Table.Th>
+                    <Table.Th style={{ width: "18%" }}>
+                      {t("admin.sources.detail.date")}
+                    </Table.Th>
+                    <Table.Th style={{ width: "18%" }}>
+                      {t("admin.sources.detail.lastScraped")}
+                    </Table.Th>
+                    <Table.Th style={{ width: "14%" }}>
+                      {t("admin.sources.detail.embeddings")}
+                    </Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
@@ -445,7 +462,9 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                           size="sm"
                           variant="light"
                         >
-                          {event.descriptionEmbedding ? "Yes" : "No"}
+                          {event.descriptionEmbedding
+                            ? t("admin.sources.detail.yes")
+                            : t("admin.sources.detail.no")}
                         </Badge>
                       </Table.Td>
                     </Table.Tr>
@@ -458,14 +477,13 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                   <Button
                     variant="light"
                     onClick={() => {
-                      // TODO: Implement pagination with continueCursor
                       notifications.show({
-                        message: "Pagination coming soon!",
+                        message: t("admin.sources.detail.paginationComingSoon"),
                         color: "blue",
                       });
                     }}
                   >
-                    Load More Events
+                    {t("admin.sources.detail.loadMoreEvents")}
                   </Button>
                 </Group>
               )}
@@ -477,22 +495,22 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
         <Modal
           opened={isEditing}
           onClose={() => setIsEditing(false)}
-          title="Edit Event Source"
+          title={t("admin.sources.detail.editEventSource")}
           size="md"
         >
           <Stack gap="md">
             <TextInput
-              label="Source Name"
+              label={t("admin.sources.detail.sourceNameLabel")}
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              placeholder="Enter source name"
+              placeholder={t("admin.sources.sourceNamePlaceholder")}
               required
             />
             <TextInput
-              label="Starting URL"
+              label={t("admin.sources.detail.startingUrlLabel")}
               value={editUrl}
               onChange={(e) => setEditUrl(e.target.value)}
-              placeholder="https://example.com/events"
+              placeholder={t("admin.sources.startingUrlPlaceholder")}
               type="url"
               required
             />
@@ -502,7 +520,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                 onClick={() => setIsEditing(false)}
                 leftSection={<IconX size={16} />}
               >
-                Cancel
+                {t("admin.sources.cancel")}
               </Button>
               <Button
                 onClick={() => {
@@ -513,7 +531,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                   })
                     .then(() => {
                       notifications.show({
-                        message: "Source updated successfully",
+                        message: t("admin.sources.detail.sourceUpdatedSuccess"),
                         color: "green",
                       });
                       setIsEditing(false);
@@ -524,7 +542,7 @@ export function SourceDetailPage({ sourceId, onBack }: SourceDetailPageProps) {
                 leftSection={<IconCheck size={16} />}
                 disabled={!editName.trim() || !editUrl.trim()}
               >
-                Save Changes
+                {t("admin.sources.detail.saveChanges")}
               </Button>
             </Group>
           </Stack>

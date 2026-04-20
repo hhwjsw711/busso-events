@@ -4,6 +4,7 @@ import { useState } from "react";
 import { notifications } from "@mantine/notifications";
 import { useAPIErrorHandler } from "../utils/hooks";
 import { formatRelativeTimeBidirectional } from "../utils/dateUtils";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Title,
@@ -57,6 +58,7 @@ export function AppAdminPage({
   onNavigateToSubscriptionDebug,
   onNavigateToWorkpoolDebug,
 }: AppAdminPageProps) {
+  const { t } = useTranslation();
   const eventsReadyForScraping = useQuery(
     api.events.eventsAdmin.getEventsReadyForScraping,
   );
@@ -99,21 +101,15 @@ export function AppAdminPage({
   };
 
   const handleDeleteAllEvents = () => {
-    if (
-      !confirm(
-        "⚠️ This will delete ALL events from the database. This action cannot be undone. Are you sure?",
-      )
-    ) {
+    if (!confirm(t("admin.deleteAllEventsConfirm"))) {
       return;
     }
 
-    const confirmation = prompt(
-      "🚨 FINAL WARNING: This will permanently delete ALL events.\nType 'DELETE ALL' to confirm:",
-    );
+    const confirmation = prompt(t("admin.deleteAllEventsFinal"));
     if (confirmation !== "DELETE ALL") {
       notifications.show({
-        title: "Cancelled",
-        message: "Deletion cancelled - confirmation text did not match",
+        title: t("admin.cancelled"),
+        message: t("admin.deletionCancelled"),
         color: "blue",
       });
       return;
@@ -123,14 +119,16 @@ export function AppAdminPage({
     deleteAllEvents({})
       .then((result) => {
         notifications.show({
-          title: "Success",
-          message: `Successfully deleted ${result.deletedCount} events`,
+          title: t("admin.success"),
+          message: t("admin.successfullyDeleted", {
+            count: result.deletedCount,
+          }),
           color: "green",
         });
         if (result.failedCount > 0) {
           notifications.show({
-            title: "Warning",
-            message: `Failed to delete ${result.failedCount} events`,
+            title: t("admin.warning"),
+            message: t("admin.failedToDelete", { count: result.failedCount }),
             color: "yellow",
           });
         }
@@ -140,11 +138,7 @@ export function AppAdminPage({
   };
 
   const handleClearAllWorkpools = () => {
-    if (
-      !confirm(
-        "This will clear all pending jobs from all workpools. Are you sure?",
-      )
-    ) {
+    if (!confirm(t("admin.clearAllWorkpoolsConfirm"))) {
       return;
     }
 
@@ -152,14 +146,16 @@ export function AppAdminPage({
     clearAllWorkpools({})
       .then((result) => {
         notifications.show({
-          title: "Success",
-          message: `Successfully cleared ${result.totalCleared} jobs from all workpools`,
+          title: t("admin.success"),
+          message: t("admin.clearAllWorkpoolsSuccess", {
+            count: result.totalCleared,
+          }),
           color: "green",
         });
         if (result.totalFailed > 0) {
           notifications.show({
-            title: "Warning",
-            message: `Failed to clear ${result.totalFailed} jobs`,
+            title: t("admin.warning"),
+            message: t("admin.failedToClear", { count: result.totalFailed }),
             color: "yellow",
           });
         }
@@ -169,11 +165,7 @@ export function AppAdminPage({
   };
 
   const handleFixMissingSchedules = () => {
-    if (
-      !confirm(
-        "This will schedule next scrapes for all sources that don't have one. Are you sure?",
-      )
-    ) {
+    if (!confirm(t("admin.fixSchedulesConfirm"))) {
       return;
     }
 
@@ -181,17 +173,19 @@ export function AppAdminPage({
     fixMissingSourceSchedules({})
       .then((result) => {
         notifications.show({
-          title: "Success",
-          message: `Checked ${result.sourcesChecked} sources and fixed ${result.sourcesFixed} missing schedules`,
+          title: t("admin.success"),
+          message: t("admin.fixSchedulesSuccess", {
+            checked: result.sourcesChecked,
+            fixed: result.sourcesFixed,
+          }),
           color: "green",
         });
 
-        // Show detailed results
-        if (result.sources.some((s) => s.error)) {
-          const failedSources = result.sources.filter((s) => s.error);
+        if (result.sources.some((s: any) => s.error)) {
+          const failedSources = result.sources.filter((s: any) => s.error);
           notifications.show({
-            title: "Some Sources Failed",
-            message: `${failedSources.length} sources failed to schedule: ${failedSources.map((s) => s.name).join(", ")}`,
+            title: t("admin.someSourcesFailed"),
+            message: `${failedSources.length} sources failed to schedule: ${failedSources.map((s: any) => s.name).join(", ")}`,
             color: "yellow",
           });
         }
@@ -205,10 +199,10 @@ export function AppAdminPage({
       <Stack gap="xl">
         <Box>
           <Title order={1} size="2.5rem">
-            Admin Dashboard
+            {t("admin.dashboard")}
           </Title>
           <Text c="dimmed" mt="xs">
-            Monitor system status, scheduled operations, and manage resources
+            {t("admin.dashboardDescription")}
           </Text>
         </Box>
 
@@ -218,7 +212,7 @@ export function AppAdminPage({
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Events Ready for Scraping
+                  {t("admin.eventsReadyForScraping")}
                 </Text>
                 <Text size="2xl" fw={700} c="blue.6">
                   {eventsReadyForScraping?.length || 0}
@@ -234,13 +228,13 @@ export function AppAdminPage({
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Email Queue
+                  {t("admin.emailQueue")}
                 </Text>
                 <Text size="2xl" fw={700} c="orange.6">
                   {queueStats?.unsent || 0}
                 </Text>
                 <Text size="xs" c="dimmed">
-                  {queueStats?.sent || 0} sent total
+                  {t("admin.sentTotal", { count: queueStats?.sent || 0 })}
                 </Text>
               </Box>
               <ThemeIcon variant="light" size={38} radius="md" color="orange">
@@ -253,7 +247,7 @@ export function AppAdminPage({
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Active Jobs
+                  {t("admin.activeJobs")}
                 </Text>
                 <Text size="2xl" fw={700} c="cyan.6">
                   {jobsStatus?.activeJobs?.length || 0}
@@ -269,13 +263,15 @@ export function AppAdminPage({
             <Group justify="space-between" align="flex-start">
               <Box>
                 <Text size="xs" c="dimmed" tt="uppercase" fw={700}>
-                  Sources Needing Scraping
+                  {t("admin.sourcesNeedingScraping")}
                 </Text>
                 <Text size="2xl" fw={700} c="red.6">
                   {sourcesStatus?.sourcesNeedingScraping || 0}
                 </Text>
                 <Text size="xs" c="dimmed">
-                  of {sourcesStatus?.activeSources || 0} active
+                  {t("admin.ofActive", {
+                    count: sourcesStatus?.activeSources || 0,
+                  })}
                 </Text>
               </Box>
               <ThemeIcon variant="light" size={38} radius="md" color="red">
@@ -292,7 +288,7 @@ export function AppAdminPage({
             <Title order={3} size="lg" mb="md">
               <Group gap="xs">
                 <IconLoader size={20} />
-                Active Jobs
+                {t("admin.activeJobs")}
               </Group>
             </Title>
 
@@ -304,21 +300,27 @@ export function AppAdminPage({
                       <Box>
                         <Text fw={500} size="sm">
                           {job.kind === "batch_event_scrape"
-                            ? "Batch Event Scraping"
-                            : "Batch Source Scraping"}
+                            ? t("admin.batchEventScraping")
+                            : t("admin.batchSourceScraping")}
                         </Text>
                         <Text size="xs" c="dimmed">
-                          Started{" "}
+                          {t("common.back")}{" "}
                           {formatRelativeTimeBidirectional(job.startedAt)}
                         </Text>
                         {job.progress?.currentEvent && (
                           <Text size="xs" c="blue">
-                            Current: {job.progress.currentEvent}
+                            {t("admin.nextUpcomingMatches", {
+                              title: job.progress.currentEvent,
+                              time: "",
+                            })}
                           </Text>
                         )}
                         {job.progress?.currentSource && (
                           <Text size="xs" c="blue">
-                            Current: {job.progress.currentSource}
+                            {t("admin.nextUpcomingMatches", {
+                              title: job.progress.currentSource,
+                              time: "",
+                            })}
                           </Text>
                         )}
                       </Box>
@@ -348,7 +350,7 @@ export function AppAdminPage({
               </Stack>
             ) : (
               <Text c="dimmed" ta="center" py="md">
-                No active jobs running
+                {t("admin.noActiveJobsRunning")}
               </Text>
             )}
           </Card>
@@ -358,7 +360,7 @@ export function AppAdminPage({
             <Title order={3} size="lg" mb="md">
               <Group gap="xs">
                 <IconClock size={20} />
-                Scheduled Operations
+                {t("admin.scheduledOperations")}
               </Group>
             </Title>
 
@@ -367,7 +369,7 @@ export function AppAdminPage({
               <Box>
                 <Group justify="space-between" align="center" mb="xs">
                   <Text fw={500} size="sm">
-                    Subscription Matching
+                    {t("admin.subscriptionMatching")}
                   </Text>
                   <Badge
                     color={
@@ -375,26 +377,32 @@ export function AppAdminPage({
                     }
                     size="sm"
                   >
-                    {schedulingInfo?.upcomingMatching || 0} scheduled
+                    {t("admin.scheduled", {
+                      count: schedulingInfo?.upcomingMatching || 0,
+                    })}
                   </Badge>
                 </Group>
                 {schedulingInfo?.overdueMatching &&
                   schedulingInfo.overdueMatching > 0 && (
                     <Text size="xs" c="red" mb="xs">
-                      {schedulingInfo.overdueMatching} overdue matches
+                      {t("admin.overdueMatches", {
+                        count: schedulingInfo.overdueMatching,
+                      })}
                     </Text>
                   )}
                 {schedulingInfo?.nextMatches &&
                 schedulingInfo.nextMatches.length > 0 ? (
                   <Text size="xs" c="dimmed">
-                    Next: {schedulingInfo.nextMatches[0].title}{" "}
-                    {formatRelativeTimeBidirectional(
-                      schedulingInfo.nextMatches[0].scheduledAt!,
-                    )}
+                    {t("admin.nextUpcomingMatches", {
+                      title: schedulingInfo.nextMatches[0].title,
+                      time: formatRelativeTimeBidirectional(
+                        schedulingInfo.nextMatches[0].scheduledAt!,
+                      ),
+                    })}
                   </Text>
                 ) : (
                   <Text size="xs" c="dimmed">
-                    No upcoming matches
+                    {t("admin.noUpcomingMatches")}
                   </Text>
                 )}
               </Box>
@@ -405,17 +413,22 @@ export function AppAdminPage({
               <Box>
                 <Group justify="space-between" align="center" mb="xs">
                   <Text fw={500} size="sm">
-                    Email Sending
+                    {t("admin.emailSending")}
                   </Text>
                   <Badge color="green" size="sm">
                     {workpoolsStatus?.subscriptionEmailWorkpool?.queuedJobs ||
                       0}{" "}
-                    queued
+                    {
+                      t("admin.scheduled", {
+                        count:
+                          workpoolsStatus?.subscriptionEmailWorkpool
+                            ?.queuedJobs || 0,
+                      }).split(" ")[0]
+                    }
                   </Badge>
                 </Group>
                 <Text size="xs" c="dimmed">
-                  Runs automatically via workpool based on subscription
-                  schedules
+                  {t("admin.runsAutomatically")}
                 </Text>
               </Box>
 
@@ -425,7 +438,7 @@ export function AppAdminPage({
               <Box>
                 <Group justify="space-between" align="center" mb="xs">
                   <Text fw={500} size="sm">
-                    Source Scraping
+                    {t("admin.sourceScraping")}
                   </Text>
                   <Badge
                     color={
@@ -433,17 +446,21 @@ export function AppAdminPage({
                     }
                     size="sm"
                   >
-                    {sourcesStatus?.sourcesNeedingScraping || 0} due
+                    {t("admin.due", {
+                      count: sourcesStatus?.sourcesNeedingScraping || 0,
+                    })}
                   </Badge>
                 </Group>
                 {sourcesStatus?.nextScrapingCandidates &&
                   sourcesStatus.nextScrapingCandidates.length > 0 && (
                     <Text size="xs" c="dimmed">
-                      Next: {sourcesStatus.nextScrapingCandidates[0].name}
-                      {sourcesStatus.nextScrapingCandidates[0]
-                        .daysSinceLastScrape
-                        ? ` (${sourcesStatus.nextScrapingCandidates[0].daysSinceLastScrape}d since last scrape)`
-                        : " (never scraped)"}
+                      {t("admin.nextSource", {
+                        name: sourcesStatus.nextScrapingCandidates[0].name,
+                        time: sourcesStatus.nextScrapingCandidates[0]
+                          .daysSinceLastScrape
+                          ? `${sourcesStatus.nextScrapingCandidates[0].daysSinceLastScrape}d`
+                          : t("admin.sources.detail.never"),
+                      })}
                     </Text>
                   )}
               </Box>
@@ -455,23 +472,23 @@ export function AppAdminPage({
         <SimpleGrid cols={{ base: 1, md: 2 }} spacing="lg">
           <Card shadow="sm" padding="xl" radius="lg" withBorder>
             <Title order={3} mb="md">
-              Event Sources
+              {t("admin.eventSources")}
             </Title>
             <Text c="dimmed" mb="lg">
-              Manage the sources from which events are scraped
+              {t("admin.manageSourcesDescription")}
             </Text>
 
             {sourcesStatus && (
               <Stack gap="xs" mb="lg">
                 <Group justify="space-between">
                   <Text size="sm" c="dimmed">
-                    Total Sources:
+                    {t("admin.totalSources")}
                   </Text>
                   <Text fw={500}>{sourcesStatus.totalSources}</Text>
                 </Group>
                 <Group justify="space-between">
                   <Text size="sm" c="dimmed">
-                    Active:
+                    {t("admin.active")}
                   </Text>
                   <Text fw={500} c="green">
                     {sourcesStatus.activeSources}
@@ -479,7 +496,7 @@ export function AppAdminPage({
                 </Group>
                 <Group justify="space-between">
                   <Text size="sm" c="dimmed">
-                    Need Scraping:
+                    {t("admin.needScraping")}
                   </Text>
                   <Text fw={500} c="red">
                     {sourcesStatus.sourcesNeedingScraping}
@@ -494,7 +511,7 @@ export function AppAdminPage({
                 leftSection={<IconSettings size={16} />}
                 fullWidth
               >
-                Manage Sources
+                {t("admin.manageSources")}
               </Button>
 
               <Button
@@ -504,14 +521,16 @@ export function AppAdminPage({
                 leftSection={<IconTool size={16} />}
                 loading={isFixingSchedules}
               >
-                {isFixingSchedules ? "Checking..." : "Fix Missing Schedules"}
+                {isFixingSchedules
+                  ? t("admin.checking")
+                  : t("admin.fixMissingSchedules")}
               </Button>
             </Stack>
           </Card>
 
           <Card shadow="sm" padding="xl" radius="lg" withBorder>
             <Title order={3} mb="lg">
-              System Operations
+              {t("admin.systemOperations")}
             </Title>
             <Stack gap="md">
               <Button
@@ -520,8 +539,11 @@ export function AppAdminPage({
                   generateMissingEmbeddings({})
                     .then((result) => {
                       notifications.show({
-                        title: "Success",
-                        message: `Generated embeddings for ${result.processed} events. ${result.failed} failed.`,
+                        title: t("common.success"),
+                        message: t("admin.generatedEmbeddings", {
+                          processed: result.processed,
+                          failed: result.failed,
+                        }),
                         color: "green",
                       });
                     })
@@ -535,8 +557,8 @@ export function AppAdminPage({
                 loading={isGeneratingEmbeddings}
               >
                 {isGeneratingEmbeddings
-                  ? "Generating..."
-                  : "Generate Missing Embeddings"}
+                  ? t("admin.generating")
+                  : t("admin.generateMissingEmbeddings")}
               </Button>
 
               <Button
@@ -545,12 +567,11 @@ export function AppAdminPage({
                 fullWidth
                 leftSection={<IconMail size={16} />}
               >
-                Debug Subscriptions
+                {t("admin.debugSubscriptions")}
               </Button>
 
               <Button
                 onClick={() => {
-                  // Extract deployment ID from VITE_CONVEX_URL (e.g., "https://next-dragon-181.convex.cloud" -> "next-dragon-181")
                   const convexUrl = import.meta.env.VITE_CONVEX_URL;
                   const deploymentId = convexUrl?.split(".")[0]?.split("//")[1];
                   const dashboardUrl = deploymentId
@@ -562,7 +583,7 @@ export function AppAdminPage({
                 fullWidth
                 leftSection={<IconExternalLink size={16} />}
               >
-                Open Convex Dashboard
+                {t("admin.openConvexDashboard")}
               </Button>
 
               <Button
@@ -572,7 +593,9 @@ export function AppAdminPage({
                 leftSection={<IconTrash size={16} />}
                 loading={isDeletingAllEvents}
               >
-                {isDeletingAllEvents ? "Deleting..." : "Delete All Events"}
+                {isDeletingAllEvents
+                  ? t("admin.deleting")
+                  : t("admin.deleteAllEvents")}
               </Button>
 
               <Button
@@ -582,11 +605,13 @@ export function AppAdminPage({
                 leftSection={<IconBrush size={16} />}
                 loading={isClearingAllWorkpools}
               >
-                {isClearingAllWorkpools ? "Clearing..." : "Clear All Workpools"}
+                {isClearingAllWorkpools
+                  ? t("admin.clearing")
+                  : t("admin.clearAllWorkpools")}
               </Button>
 
               <Text size="xs" c="dimmed" ta="center">
-                All operations are logged and can be monitored in real-time
+                {t("admin.allOperationsLogged")}
               </Text>
             </Stack>
           </Card>
@@ -597,7 +622,7 @@ export function AppAdminPage({
           <Title order={3} size="lg" mb="md">
             <Group gap="xs">
               <IconCpu size={20} />
-              Workpool Status
+              {t("admin.workpoolStatus")}
             </Group>
           </Title>
 
@@ -615,7 +640,12 @@ export function AppAdminPage({
                 <Group justify="space-between" align="flex-start" mb="sm">
                   <Text size="xl">🕷️</Text>
                   <Badge color="yellow" size="sm">
-                    {workpoolsStatus.eventScrapeWorkpool.queuedJobs} queued
+                    {workpoolsStatus.eventScrapeWorkpool.queuedJobs}{" "}
+                    {
+                      t("admin.scheduled", {
+                        count: workpoolsStatus.eventScrapeWorkpool.queuedJobs,
+                      }).split(" ")[0]
+                    }
                   </Badge>
                 </Group>
                 <Title order={4} size="md" mb="xs">
@@ -626,14 +656,16 @@ export function AppAdminPage({
                 </Text>
                 <Group justify="space-between">
                   <Text size="xs" c="dimmed">
-                    Max: {workpoolsStatus.eventScrapeWorkpool.maxParallelism}
+                    {t("admin.max", {
+                      count: workpoolsStatus.eventScrapeWorkpool.maxParallelism,
+                    })}
                   </Text>
                   <Button
                     size="xs"
                     variant="subtle"
                     rightSection={<IconExternalLink size={12} />}
                   >
-                    View Details
+                    {t("admin.viewDetails")}
                   </Button>
                 </Group>
               </Card>
@@ -652,7 +684,13 @@ export function AppAdminPage({
                 <Group justify="space-between" align="flex-start" mb="sm">
                   <Text size="xl">🧠</Text>
                   <Badge color="grape" size="sm">
-                    {workpoolsStatus.eventEmbeddingWorkpool.queuedJobs} queued
+                    {workpoolsStatus.eventEmbeddingWorkpool.queuedJobs}{" "}
+                    {
+                      t("admin.scheduled", {
+                        count:
+                          workpoolsStatus.eventEmbeddingWorkpool.queuedJobs,
+                      }).split(" ")[0]
+                    }
                   </Badge>
                 </Group>
                 <Title order={4} size="md" mb="xs">
@@ -663,14 +701,17 @@ export function AppAdminPage({
                 </Text>
                 <Group justify="space-between">
                   <Text size="xs" c="dimmed">
-                    Max: {workpoolsStatus.eventEmbeddingWorkpool.maxParallelism}
+                    {t("admin.max", {
+                      count:
+                        workpoolsStatus.eventEmbeddingWorkpool.maxParallelism,
+                    })}
                   </Text>
                   <Button
                     size="xs"
                     variant="subtle"
                     rightSection={<IconExternalLink size={12} />}
                   >
-                    View Details
+                    {t("admin.viewDetails")}
                   </Button>
                 </Group>
               </Card>
@@ -690,7 +731,12 @@ export function AppAdminPage({
                   <Text size="xl">🎯</Text>
                   <Badge color="blue" size="sm">
                     {workpoolsStatus.subscriptionMatchWorkpool.queuedJobs}{" "}
-                    queued
+                    {
+                      t("admin.scheduled", {
+                        count:
+                          workpoolsStatus.subscriptionMatchWorkpool.queuedJobs,
+                      }).split(" ")[0]
+                    }
                   </Badge>
                 </Group>
                 <Title order={4} size="md" mb="xs">
@@ -701,15 +747,18 @@ export function AppAdminPage({
                 </Text>
                 <Group justify="space-between">
                   <Text size="xs" c="dimmed">
-                    Max:{" "}
-                    {workpoolsStatus.subscriptionMatchWorkpool.maxParallelism}
+                    {t("admin.max", {
+                      count:
+                        workpoolsStatus.subscriptionMatchWorkpool
+                          .maxParallelism,
+                    })}
                   </Text>
                   <Button
                     size="xs"
                     variant="subtle"
                     rightSection={<IconExternalLink size={12} />}
                   >
-                    View Details
+                    {t("admin.viewDetails")}
                   </Button>
                 </Group>
               </Card>
@@ -729,36 +778,44 @@ export function AppAdminPage({
                   <Text size="xl">📧</Text>
                   <Badge color="green" size="sm">
                     {workpoolsStatus.subscriptionEmailWorkpool?.queuedJobs || 0}{" "}
-                    queued
+                    {
+                      t("admin.scheduled", {
+                        count:
+                          workpoolsStatus.subscriptionEmailWorkpool
+                            ?.queuedJobs || 0,
+                      }).split(" ")[0]
+                    }
                   </Badge>
                 </Group>
                 <Title order={4} size="md" mb="xs">
                   {workpoolsStatus.subscriptionEmailWorkpool?.name ||
-                    "Subscription Email Sending"}
+                    t("admin.subscriptionEmailSending")}
                 </Title>
                 <Text size="sm" c="dimmed" mb="sm">
                   {workpoolsStatus.subscriptionEmailWorkpool?.description ||
-                    "Sends email notifications for subscription matches"}
+                    t("admin.sendsEmailNotifications")}
                 </Text>
                 <Group justify="space-between">
                   <Text size="xs" c="dimmed">
-                    Max:{" "}
-                    {workpoolsStatus.subscriptionEmailWorkpool
-                      ?.maxParallelism || 2}
+                    {t("admin.max", {
+                      count:
+                        workpoolsStatus.subscriptionEmailWorkpool
+                          ?.maxParallelism || 2,
+                    })}
                   </Text>
                   <Button
                     size="xs"
                     variant="subtle"
                     rightSection={<IconExternalLink size={12} />}
                   >
-                    View Details
+                    {t("admin.viewDetails")}
                   </Button>
                 </Group>
               </Card>
             </SimpleGrid>
           ) : (
             <Text c="dimmed" ta="center" py="md">
-              Loading workpool status...
+              {t("common.loading")}
             </Text>
           )}
         </Card>
@@ -767,7 +824,7 @@ export function AppAdminPage({
         {jobsStatus?.recentJobs && jobsStatus.recentJobs.length > 0 && (
           <Card shadow="sm" padding="xl" radius="lg" withBorder>
             <Title order={3} size="lg" mb="md">
-              Recent System Activity (24h)
+              {t("admin.recentSystemActivity")}
             </Title>
             <Stack gap="sm">
               {jobsStatus.recentJobs.map((job: any) => (
@@ -775,13 +832,17 @@ export function AppAdminPage({
                   <Box>
                     <Text fw={500} size="sm">
                       {job.kind === "batch_event_scrape"
-                        ? "Batch Event Scraping"
-                        : "Batch Source Scraping"}
+                        ? t("admin.batchEventScraping")
+                        : t("admin.batchSourceScraping")}
                     </Text>
                     <Text size="xs" c="dimmed">
                       {formatRelativeTimeBidirectional(job.startedAt)}
                       {job.completedAt &&
-                        ` • Duration: ${Math.round((job.completedAt - job.startedAt) / 1000 / 60)}m`}
+                        t("admin.duration", {
+                          minutes: Math.round(
+                            (job.completedAt - job.startedAt) / 1000 / 60,
+                          ),
+                        })}
                     </Text>
                   </Box>
                   <Group gap="xs">
@@ -808,18 +869,17 @@ export function AppAdminPage({
         {/* Notification Testing */}
         <Card shadow="sm" padding="xl" radius="lg" withBorder>
           <Title order={3} mb="lg">
-            🔔 Notification Testing
+            🔔 {t("admin.notificationTesting")}
           </Title>
           <Text size="sm" c="dimmed" mb="md">
-            Test different types of notifications to ensure they're working
-            properly
+            {t("admin.testNotificationDescription")}
           </Text>
           <SimpleGrid cols={{ base: 2, md: 4 }} spacing="md">
             <Button
               onClick={() => {
                 notifications.show({
-                  title: "Success!",
-                  message: "This is a success notification",
+                  title: t("admin.testSuccess"),
+                  message: t("admin.successNotification"),
                   color: "green",
                 });
               }}
@@ -827,14 +887,14 @@ export function AppAdminPage({
               leftSection={<IconBell size={16} />}
               size="sm"
             >
-              Success
+              {t("admin.testSuccess")}
             </Button>
 
             <Button
               onClick={() => {
                 notifications.show({
-                  title: "Error!",
-                  message: "This is an error notification",
+                  title: t("admin.testError"),
+                  message: t("admin.errorNotification"),
                   color: "red",
                 });
               }}
@@ -842,14 +902,14 @@ export function AppAdminPage({
               leftSection={<IconBellRinging size={16} />}
               size="sm"
             >
-              Error
+              {t("admin.testError")}
             </Button>
 
             <Button
               onClick={() => {
                 notifications.show({
-                  title: "Warning!",
-                  message: "This is a warning notification",
+                  title: t("admin.testWarning"),
+                  message: t("admin.warningNotification"),
                   color: "yellow",
                 });
               }}
@@ -857,14 +917,14 @@ export function AppAdminPage({
               leftSection={<IconBell size={16} />}
               size="sm"
             >
-              Warning
+              {t("admin.testWarning")}
             </Button>
 
             <Button
               onClick={() => {
                 notifications.show({
-                  title: "Info",
-                  message: "This is an info notification",
+                  title: t("admin.testInfo"),
+                  message: t("admin.infoNotification"),
                   color: "blue",
                 });
               }}
@@ -872,7 +932,7 @@ export function AppAdminPage({
               leftSection={<IconBell size={16} />}
               size="sm"
             >
-              Info
+              {t("admin.testInfo")}
             </Button>
           </SimpleGrid>
 
@@ -882,8 +942,8 @@ export function AppAdminPage({
             onClick={() => {
               notifications.show({
                 id: "test-loading",
-                title: "Loading...",
-                message: "This notification will update in 2 seconds",
+                title: t("common.loading"),
+                message: t("admin.loadingNotification"),
                 color: "blue",
                 loading: true,
                 autoClose: false,
@@ -892,8 +952,8 @@ export function AppAdminPage({
               setTimeout(() => {
                 notifications.update({
                   id: "test-loading",
-                  title: "Complete!",
-                  message: "The loading notification has been updated",
+                  title: t("common.success"),
+                  message: t("admin.completeNotification"),
                   color: "green",
                   loading: false,
                   autoClose: 5000,
@@ -905,7 +965,7 @@ export function AppAdminPage({
             leftSection={<IconBellRinging size={16} />}
             size="sm"
           >
-            Test Loading → Success Update
+            {t("admin.testLoadingSuccess")}
           </Button>
         </Card>
       </Stack>

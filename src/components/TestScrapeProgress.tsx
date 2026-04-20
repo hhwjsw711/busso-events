@@ -1,6 +1,7 @@
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
+import { useTranslation } from "react-i18next";
 import {
   Paper,
   Stack,
@@ -19,6 +20,7 @@ interface TestScrapeProgressProps {
 }
 
 export function TestScrapeProgress({ testScrapeId }: TestScrapeProgressProps) {
+  const { t } = useTranslation();
   const testScrape = useQuery(
     api.eventSources.eventSources.getTestScrapeByIdPublic,
     testScrapeId ? { testScrapeId } : "skip",
@@ -56,7 +58,7 @@ export function TestScrapeProgress({ testScrapeId }: TestScrapeProgressProps) {
     <Paper withBorder p="md" radius="md" mt="md">
       <Stack gap="xs">
         <Group justify="space-between">
-          <Text fw={500}>Test Scrape Progress</Text>
+          <Text fw={500}>{t("testScrape.progress")}</Text>
           {testScrape.status === "completed" && (
             <IconCheck size={16} color="green" />
           )}
@@ -68,37 +70,40 @@ export function TestScrapeProgress({ testScrapeId }: TestScrapeProgressProps) {
           size="sm"
         />
         <Text size="sm" c="dimmed">
-          {testScrape.progress?.message || "Initializing..."}
+          {testScrape.progress?.message || t("testScrape.initializing")}
         </Text>
         {testScrape.result && (
           <Alert
             color={testScrape.result.success ? "green" : "red"}
             title={
-              testScrape.result.success ? "Test Successful" : "Test Failed"
+              testScrape.result.success
+                ? t("testScrape.testSuccessful")
+                : t("testScrape.testFailed")
             }
           >
             {testScrape.result.message}
             {testScrape.result.eventsFound !== undefined && (
               <Text size="sm" mt="xs">
-                Found {testScrape.result.eventsFound} potential events
+                {t("testScrape.foundEvents", {
+                  count: testScrape.result.eventsFound,
+                })}
               </Text>
             )}
           </Alert>
         )}
-        {/* Show event details if available */}
         {testScrape.status === "completed" &&
           testScrape.result?.data?.extractedEvents &&
           testScrape.result.data.extractedEvents.length > 0 && (
             <Box mt="md">
               <Title order={4} mb="xs">
-                Extracted Events
+                {t("testScrape.extractedEvents")}
               </Title>
               <Table striped withRowBorders>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Title</Table.Th>
-                    <Table.Th>URL</Table.Th>
-                    <Table.Th>Date</Table.Th>
+                    <Table.Th>{t("testScrape.title")}</Table.Th>
+                    <Table.Th>{t("testScrape.url")}</Table.Th>
+                    <Table.Th>{t("testScrape.date")}</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>

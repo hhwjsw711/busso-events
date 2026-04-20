@@ -6,6 +6,7 @@ import { notifications } from "@mantine/notifications";
 import { TestScrapeProgress } from "./TestScrapeProgress";
 import { useAPIErrorHandler } from "../utils/hooks";
 import { routes } from "../router";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Title,
@@ -29,6 +30,7 @@ interface AddSourcePageProps {
 }
 
 export function AddSourcePage({ onBack }: AddSourcePageProps) {
+  const { t } = useTranslation();
   const createSource = useMutation(api.eventSources.eventSourcesAdmin.create);
   const startTestScrape = useMutation(
     api.eventSources.eventSourcesAdmin.startTestScrape,
@@ -55,14 +57,14 @@ export function AddSourcePage({ onBack }: AddSourcePageProps) {
           onClick={() => void onBack()}
           style={{ alignSelf: "flex-start" }}
         >
-          Back to Sources
+          {t("admin.sources.backToSources")}
         </Button>
         <Box>
           <Title order={1} size="2.5rem">
-            Add Event Source
+            {t("admin.sources.addEventSource")}
           </Title>
           <Text c="dimmed" mt="xs">
-            Configure a new source for automatic event discovery
+            {t("admin.sources.addEventSourceDescription")}
           </Text>
         </Box>
         <Card shadow="sm" padding="xl" radius="lg" withBorder>
@@ -77,7 +79,7 @@ export function AddSourcePage({ onBack }: AddSourcePageProps) {
               })
                 .then(() => {
                   notifications.show({
-                    message: "Event source created successfully!",
+                    message: t("admin.sources.createdSuccess"),
                     color: "green",
                   });
                   routes.sources().push();
@@ -88,38 +90,36 @@ export function AddSourcePage({ onBack }: AddSourcePageProps) {
           >
             <Stack gap="lg">
               <TextInput
-                label="Source Name"
+                label={t("admin.sources.sourceName")}
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                placeholder="e.g., Tech Events SF, Startup Meetups"
+                placeholder={t("admin.sources.sourceNamePlaceholder")}
                 required
               />
               <Box>
                 <TextInput
-                  label="Starting URL"
+                  label={t("admin.sources.startingUrl")}
                   type="url"
                   value={formData.startingUrl}
                   onChange={(e) =>
                     setFormData({ ...formData, startingUrl: e.target.value })
                   }
-                  placeholder="https://example.com/events"
+                  placeholder={t("admin.sources.startingUrlPlaceholder")}
                   required
                 />
                 <Text size="sm" c="dimmed" mt="xs">
-                  The URL where the scraper should start looking for events
+                  {t("admin.sources.startingUrlDescription")}
                 </Text>
               </Box>
 
               <Alert
                 icon={<IconAlertTriangle size={16} />}
-                title="Important Note"
+                title={t("admin.sources.importantNote")}
                 color="yellow"
               >
-                Make sure the URL you provide contains event listings that can
-                be scraped. The system will attempt to automatically discover
-                and extract event information.
+                {t("admin.sources.importantNoteDescription")}
               </Alert>
               <Group justify="space-between">
                 <Button
@@ -129,7 +129,7 @@ export function AddSourcePage({ onBack }: AddSourcePageProps) {
                   size="lg"
                   style={{ flex: 1 }}
                 >
-                  Cancel
+                  {t("admin.sources.cancel")}
                 </Button>
                 <Button
                   type="button"
@@ -148,7 +148,7 @@ export function AddSourcePage({ onBack }: AddSourcePageProps) {
                   style={{ flex: 1 }}
                   leftSection={<IconSearch size={16} />}
                 >
-                  {"Test Scrape"}
+                  {t("admin.sources.testScrape")}
                 </Button>
                 <Button
                   type="submit"
@@ -157,7 +157,9 @@ export function AddSourcePage({ onBack }: AddSourcePageProps) {
                   style={{ flex: 1 }}
                   loading={isLoading}
                 >
-                  {isLoading ? "Creating..." : "Create Source"}
+                  {isLoading
+                    ? t("admin.sources.creating")
+                    : t("admin.sources.createSource")}
                 </Button>
               </Group>
             </Stack>
