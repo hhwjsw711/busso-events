@@ -13,6 +13,7 @@ import {
   Center,
   Box,
 } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import { SubscriptionCard } from "./SubscriptionCard";
 
 interface SubscriptionsPageProps {
@@ -24,6 +25,7 @@ export function SubscriptionsPage({
   onCreateNew,
   onNavigateToSubscription,
 }: SubscriptionsPageProps) {
+  const { t } = useTranslation();
   const subscriptions = useQuery(api.subscriptions.subscriptions.list);
 
   if (subscriptions === undefined) {
@@ -39,14 +41,14 @@ export function SubscriptionsPage({
       <Group justify="space-between" mb="xl">
         <Box>
           <Title order={1} size="2.5rem">
-            Event Subscriptions
+            {t("subscriptions.title")}
           </Title>
           <Text c="dimmed" mt="xs">
-            Manage your event notification preferences
+            {t("subscriptions.subtitle")}
           </Text>
         </Box>
         <Button onClick={onCreateNew} size="lg">
-          + Create Subscription
+          {t("subscriptions.createNew")}
         </Button>
       </Group>
 
@@ -61,14 +63,13 @@ export function SubscriptionsPage({
             📧
           </Text>
           <Title order={3} mb="xs">
-            No subscriptions yet
+            {t("subscriptions.noSubscriptions")}
           </Title>
           <Text c="dimmed" mb="lg">
-            Create your first subscription to get notified about events that
-            match your interests
+            {t("subscriptions.noSubscriptionsDescription")}
           </Text>
           <Button onClick={onCreateNew} size="lg">
-            Create Your First Subscription
+            {t("subscriptions.createFirst")}
           </Button>
         </Card>
       ) : (

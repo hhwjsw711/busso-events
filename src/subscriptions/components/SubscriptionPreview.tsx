@@ -4,6 +4,7 @@ import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
 import { formatEventDateFriendly } from "../../utils/dateUtils";
 import { EventDescription } from "../../events/EventDescription";
+import { useTranslation } from "react-i18next";
 import {
   Title,
   Text,
@@ -41,6 +42,7 @@ export function SubscriptionPreview({
   prompt,
   onError,
 }: SubscriptionPreviewProps) {
+  const { t } = useTranslation();
   const [debouncedPrompt, setDebouncedPrompt] = useState("");
   const [previewEvents, setPreviewEvents] = useState<PreviewEvent[] | null>(
     null,
@@ -111,11 +113,10 @@ export function SubscriptionPreview({
       <Divider />
       <Box mt="xl">
         <Title order={3} mb="md">
-          Preview: Events matching your interests
+          {t("subscriptions.previewTitle")}
         </Title>
         <Text size="sm" c="dimmed" mb="lg">
-          Here's a sample of events that match your description (with match
-          scores):
+          {t("subscriptions.previewDescription")}
         </Text>
 
         {isLoadingPreview ? (
@@ -123,7 +124,7 @@ export function SubscriptionPreview({
             <Group gap="xs">
               <Loader size="sm" />
               <Text size="sm" c="dimmed">
-                Finding matching events...
+                {t("subscriptions.findingEvents")}
               </Text>
             </Group>
           </Center>
@@ -137,7 +138,7 @@ export function SubscriptionPreview({
             <Text size="2rem" mb="sm">
               ⏳
             </Text>
-            <Text c="dimmed">Loading preview...</Text>
+            <Text c="dimmed">{t("subscriptions.loadingPreview")}</Text>
           </Card>
         ) : previewEvents.length === 0 ? (
           <Card
@@ -150,10 +151,10 @@ export function SubscriptionPreview({
               🔍
             </Text>
             <Text c="dimmed" mb="xs">
-              No events found matching this description
+              {t("subscriptions.noEventsFound")}
             </Text>
             <Text size="sm" c="dimmed">
-              Try adjusting your prompt or check back later for new events
+              {t("subscriptions.tryAdjusting")}
             </Text>
           </Card>
         ) : (
@@ -169,8 +170,9 @@ export function SubscriptionPreview({
                     style={{ borderRadius: "50%" }}
                   />
                   <Text fw={500} size="md">
-                    Events that will trigger notifications (
-                    {eventsAboveThreshold.length})
+                    {t("subscriptions.willNotify", {
+                      count: eventsAboveThreshold.length,
+                    })}
                   </Text>
                 </Group>
                 <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
@@ -205,7 +207,9 @@ export function SubscriptionPreview({
                             )}
                             size="xs"
                           >
-                            Score: {event.score.toFixed(3)}
+                            {t("subscriptions.score", {
+                              score: event.score.toFixed(3),
+                            })}
                           </Badge>
                           <Badge
                             color={getMatchTypeColor(
@@ -250,8 +254,9 @@ export function SubscriptionPreview({
                     style={{ borderRadius: "50%" }}
                   />
                   <Text fw={500} size="md" c="dimmed">
-                    Below relevance threshold - won't trigger notifications (
-                    {eventsBelowThreshold.length})
+                    {t("subscriptions.belowThreshold", {
+                      count: eventsBelowThreshold.length,
+                    })}
                   </Text>
                 </Group>
                 <SimpleGrid cols={{ base: 1, md: 2, lg: 3 }} spacing="md">
@@ -288,7 +293,9 @@ export function SubscriptionPreview({
                             )}
                             size="xs"
                           >
-                            Score: {event.score.toFixed(3)}
+                            {t("subscriptions.score", {
+                              score: event.score.toFixed(3),
+                            })}
                           </Badge>
                           <Badge
                             color={getMatchTypeColor(
@@ -300,7 +307,9 @@ export function SubscriptionPreview({
                             {event.matchType}
                           </Badge>
                           <Badge color="red" size="xs">
-                            Below {event.thresholdValue}
+                            {t("subscriptions.below", {
+                              value: event.thresholdValue,
+                            })}
                           </Badge>
                         </Group>
                         <Text fw={500} size="sm" c="dimmed" lineClamp={2}>
@@ -332,14 +341,16 @@ export function SubscriptionPreview({
             <Text size="sm" c="blue.8">
               💡{" "}
               <Text span fw={500}>
-                Found {eventsAboveThreshold.length} relevant events
+                {t("subscriptions.foundRelevant", {
+                  count: eventsAboveThreshold.length,
+                })}
               </Text>{" "}
-              that will trigger notifications.
               {eventsBelowThreshold.length > 0 && (
                 <Text span>
                   {" "}
-                  {eventsBelowThreshold.length} additional events are shown but
-                  fall below the relevance threshold.
+                  {t("subscriptions.additionalEvents", {
+                    count: eventsBelowThreshold.length,
+                  })}
                 </Text>
               )}
             </Text>

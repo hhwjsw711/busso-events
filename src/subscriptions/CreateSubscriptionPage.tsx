@@ -3,6 +3,7 @@ import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { notifications } from "@mantine/notifications";
 import { useAPIErrorHandler } from "../utils/hooks";
+import { useTranslation } from "react-i18next";
 import {
   Container,
   Title,
@@ -26,6 +27,7 @@ interface CreateSubscriptionPageProps {
 export function CreateSubscriptionPage({
   onBack,
 }: CreateSubscriptionPageProps) {
+  const { t } = useTranslation();
   const createPromptSubscription = useMutation(
     api.subscriptions.subscriptions.createPrompt,
   );
@@ -50,15 +52,15 @@ export function CreateSubscriptionPage({
           onClick={onBack}
           style={{ alignSelf: "flex-start" }}
         >
-          Back to Subscriptions
+          {t("subscriptions.backToSubscriptions")}
         </Button>
 
         <Box>
           <Title order={1} size="2.5rem">
-            Create Event Subscription
+            {t("subscriptions.createTitle")}
           </Title>
           <Text c="dimmed" mt="xs">
-            Get notified about events that match your interests
+            {t("subscriptions.createDescription")}
           </Text>
         </Box>
 
@@ -69,7 +71,7 @@ export function CreateSubscriptionPage({
 
               if (subscriptionType === "prompt" && !prompt.trim()) {
                 notifications.show({
-                  message: "Please enter a prompt for your subscription",
+                  message: t("subscriptions.enterPrompt"),
                   color: "red",
                 });
                 return;
@@ -84,7 +86,7 @@ export function CreateSubscriptionPage({
                 })
                   .then(() => {
                     notifications.show({
-                      message: "Subscription created successfully!",
+                      message: t("subscriptions.createdSuccess"),
                       color: "green",
                     });
                     onBack();
@@ -97,7 +99,7 @@ export function CreateSubscriptionPage({
                 })
                   .then(() => {
                     notifications.show({
-                      message: "Subscription created successfully!",
+                      message: t("subscriptions.createdSuccess"),
                       color: "green",
                     });
                     onBack();
@@ -110,7 +112,7 @@ export function CreateSubscriptionPage({
             <Stack gap="lg">
               <Box>
                 <Text fw={500} size="sm" mb="xs">
-                  Subscription Type
+                  {t("subscriptions.subscriptionType")}
                 </Text>
                 <SegmentedControl
                   value={subscriptionType}
@@ -118,14 +120,19 @@ export function CreateSubscriptionPage({
                     setSubscriptionType(value as "prompt" | "all_events")
                   }
                   data={[
-                    { label: "Specific Interests", value: "prompt" },
-                    { label: "All Events", value: "all_events" },
+                    {
+                      label: t("subscriptions.specificInterests"),
+                      value: "prompt",
+                    },
+                    {
+                      label: t("subscriptions.allEvents"),
+                      value: "all_events",
+                    },
                   ]}
                   fullWidth
                 />
                 <Text size="sm" c="dimmed" mt="xs">
-                  Choose whether to get notified about specific types of events
-                  or all events
+                  {t("subscriptions.subscriptionTypeDescription")}
                 </Text>
               </Box>
 
@@ -135,27 +142,25 @@ export function CreateSubscriptionPage({
                   color="blue"
                   variant="light"
                 >
-                  You'll receive notifications for all future events. This can
-                  result in many emails.
+                  {t("subscriptions.allEventsWarning")}
                 </Alert>
               )}
 
               {subscriptionType === "prompt" && (
                 <Box>
                   <Text fw={500} size="sm" mb="xs">
-                    What kind of events are you interested in?
+                    {t("subscriptions.promptQuestion")}
                   </Text>
                   <Textarea
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="e.g., AI and machine learning conferences, startup networking events, tech talks about web development..."
+                    placeholder={t("subscriptions.promptPlaceholder")}
                     rows={4}
                     required
                     autosize
                   />
                   <Text size="sm" c="dimmed" mt="xs">
-                    Describe the types of events you'd like to be notified
-                    about. Be as specific or general as you'd like.
+                    {t("subscriptions.promptDescription")}
                   </Text>
                 </Box>
               )}
@@ -172,7 +177,7 @@ export function CreateSubscriptionPage({
                   size="lg"
                   style={{ flex: 1 }}
                 >
-                  Cancel
+                  {t("subscriptions.cancel")}
                 </Button>
 
                 <Button
@@ -185,7 +190,9 @@ export function CreateSubscriptionPage({
                   style={{ flex: 1 }}
                   loading={isLoading}
                 >
-                  {isLoading ? "Creating..." : "Create Subscription"}
+                  {isLoading
+                    ? t("subscriptions.creating")
+                    : t("subscriptions.createSubscription")}
                 </Button>
               </Group>
             </Stack>

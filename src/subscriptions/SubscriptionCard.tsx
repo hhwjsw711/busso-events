@@ -1,5 +1,6 @@
 import { Doc } from "../../convex/_generated/dataModel";
 import { formatDate, formatRelativeTime } from "../utils/dateUtils";
+import { useTranslation } from "react-i18next";
 import {
   Card,
   Stack,
@@ -26,6 +27,7 @@ export function SubscriptionCard({
   subscription,
   onClick,
 }: SubscriptionCardProps) {
+  const { t } = useTranslation();
   const isPromptSubscription =
     (subscription as any).kind === "prompt" ||
     (subscription as any).prompt !== undefined;
@@ -50,18 +52,24 @@ export function SubscriptionCard({
               style={{ borderRadius: "50%" }}
             />
             <Badge color={subscription.isActive ? "green" : "gray"} size="sm">
-              {subscription.isActive ? "Active" : "Inactive"}
+              {subscription.isActive
+                ? t("subscriptions.active")
+                : t("subscriptions.inactive")}
             </Badge>
             <Badge
               color={isAllEventsSubscription ? "purple" : "orange"}
               size="sm"
             >
-              {isAllEventsSubscription ? "All Events" : "Prompt-based"}
+              {isAllEventsSubscription
+                ? t("subscriptions.allEvents")
+                : t("subscriptions.promptBased")}
             </Badge>
             {subscription.totalQueuedEvents > 0 && (
               <Badge color="blue" size="sm">
-                {subscription.totalQueuedEvents} queued event
-                {subscription.totalQueuedEvents > 1 ? "s" : ""}
+                {subscription.totalQueuedEvents}{" "}
+                {subscription.totalQueuedEvents > 1
+                  ? t("subscriptions.queuedEvents")
+                  : t("subscriptions.queuedEvent")}
               </Badge>
             )}
           </Group>
@@ -73,14 +81,14 @@ export function SubscriptionCard({
               </Text>
             ) : (
               <Text size="md" style={{ lineHeight: 1.6 }} c="purple.7">
-                Subscribed to all events
+                {t("subscriptions.subscribedToAll")}
               </Text>
             )}
 
             <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
               <Box>
                 <Text fw={500} size="sm">
-                  Email frequency:
+                  {t("subscriptions.emailFrequency")}
                 </Text>
                 <Text size="sm" c="dimmed">
                   {subscription.emailFrequencyHours}h
@@ -88,17 +96,17 @@ export function SubscriptionCard({
               </Box>
               <Box>
                 <Text fw={500} size="sm">
-                  Last email:
+                  {t("subscriptions.lastEmail")}
                 </Text>
                 <Text size="sm" c="dimmed">
                   {subscription.lastEmailSent
                     ? formatDate(subscription.lastEmailSent)
-                    : "Never"}
+                    : t("subscriptions.never")}
                 </Text>
               </Box>
               <Box>
                 <Text fw={500} size="sm">
-                  Next email:
+                  {t("subscriptions.nextEmail")}
                 </Text>
                 <Text
                   size="sm"
@@ -117,30 +125,38 @@ export function SubscriptionCard({
             {subscription.queuedEvents.length > 0 && (
               <Card withBorder radius="md" bg="blue.0">
                 <Title order={4} c="blue.9" mb="sm">
-                  Queued Events ({subscription.totalQueuedEvents})
+                  {t("subscriptions.pendingTitle")} (
+                  {subscription.totalQueuedEvents})
                 </Title>
                 <Stack gap="xs">
                   {subscription.queuedEvents.map((queueItem: any) => (
                     <Box key={queueItem._id}>
                       <Group gap="xs" align="center">
                         <Text fw={500} size="sm" c="blue.8">
-                          {queueItem.event?.title || "Event not found"}
+                          {queueItem.event?.title ||
+                            t("subscriptions.eventNotFound")}
                         </Text>
                         <Text size="xs" c="blue.6">
-                          ({(queueItem.matchScore * 100).toFixed(0)}% match)
+                          (
+                          {t("subscriptions.match", {
+                            score: (queueItem.matchScore * 100).toFixed(0),
+                          })}
+                          )
                         </Text>
                       </Group>
                       <Text size="xs" c="blue.6">
                         📅{" "}
                         {queueItem.event
                           ? formatDate(queueItem.event.eventDate)
-                          : "Unknown date"}
+                          : t("subscriptions.unknownDate")}
                       </Text>
                     </Box>
                   ))}
                   {subscription.totalQueuedEvents > 5 && (
                     <Text size="xs" c="blue.6">
-                      ... and {subscription.totalQueuedEvents - 5} more
+                      {t("subscriptions.andMore", {
+                        count: subscription.totalQueuedEvents - 5,
+                      })}
                     </Text>
                   )}
                 </Stack>

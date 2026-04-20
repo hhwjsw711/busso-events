@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { notifications } from "@mantine/notifications";
 import { useAPIErrorHandler } from "../utils/hooks";
+import { useTranslation } from "react-i18next";
 import { formatDate, formatRelativeTime } from "../utils/dateUtils";
 import { EventDescription } from "../events/EventDescription";
 import {
@@ -43,6 +44,7 @@ export function SubscriptionDetailPage({
   subscriptionId,
   onBack,
 }: SubscriptionDetailPageProps) {
+  const { t } = useTranslation();
   const subscription = useQuery(api.subscriptions.subscriptions.get, {
     subscriptionId,
   });
@@ -76,12 +78,9 @@ export function SubscriptionDetailPage({
           <ActionIcon variant="subtle" onClick={onBack}>
             <IconArrowLeft size={20} />
           </ActionIcon>
-          <Title order={1}>Subscription Not Found</Title>
+          <Title order={1}>{t("subscriptions.notFound")}</Title>
         </Group>
-        <Text>
-          The subscription you're looking for doesn't exist or you don't have
-          access to it.
-        </Text>
+        <Text>{t("subscriptions.notFoundDescription")}</Text>
       </Container>
     );
   }
@@ -104,8 +103,8 @@ export function SubscriptionDetailPage({
       .then(() => {
         setEditingPrompt(false);
         notifications.show({
-          title: "Success",
-          message: "Subscription updated",
+          title: t("subscriptions.success"),
+          message: t("subscriptions.updated"),
           color: "green",
         });
       })
@@ -124,8 +123,10 @@ export function SubscriptionDetailPage({
     })
       .then(() => {
         notifications.show({
-          title: "Success",
-          message: `Subscription ${!subscription.isActive ? "activated" : "deactivated"}`,
+          title: t("subscriptions.success"),
+          message: !subscription.isActive
+            ? t("subscriptions.activated")
+            : t("subscriptions.deactivated"),
           color: "green",
         });
       })
@@ -140,13 +141,13 @@ export function SubscriptionDetailPage({
       .then((result) => {
         if (result.success) {
           notifications.show({
-            title: "Success",
-            message: `Email sent successfully! ${result.eventsSent} events included.`,
+            title: t("subscriptions.success"),
+            message: t("subscriptions.emailSent", { count: result.eventsSent }),
             color: "green",
           });
         } else {
           notifications.show({
-            title: "Error",
+            title: t("subscriptions.error"),
             message: result.message,
             color: "red",
           });
@@ -157,13 +158,13 @@ export function SubscriptionDetailPage({
   };
 
   const handleDelete = () => {
-    if (!confirm("Are you sure you want to delete this subscription?")) return;
+    if (!confirm(t("subscriptions.confirmDelete"))) return;
 
     deleteSubscription({ id: subscription._id })
       .then(() => {
         notifications.show({
-          title: "Success",
-          message: "Subscription deleted",
+          title: t("subscriptions.success"),
+          message: t("subscriptions.deleted"),
           color: "green",
         });
         onBack();
@@ -178,9 +179,9 @@ export function SubscriptionDetailPage({
           <IconArrowLeft size={20} />
         </ActionIcon>
         <Box>
-          <Title order={1}>Subscription Details</Title>
+          <Title order={1}>{t("subscriptions.detailsTitle")}</Title>
           <Text c="dimmed" mt="xs">
-            Manage your subscription settings and view pending events
+            {t("subscriptions.detailsDescription")}
           </Text>
         </Box>
       </Group>
@@ -198,10 +199,14 @@ export function SubscriptionDetailPage({
                   style={{ borderRadius: "50%" }}
                 />
                 <Badge color={subscription.isActive ? "green" : "gray"}>
-                  {subscription.isActive ? "Active" : "Inactive"}
+                  {subscription.isActive
+                    ? t("subscriptions.active")
+                    : t("subscriptions.inactive")}
                 </Badge>
                 <Badge color={isAllEventsSubscription ? "purple" : "orange"}>
-                  {isAllEventsSubscription ? "All Events" : "Prompt-based"}
+                  {isAllEventsSubscription
+                    ? t("subscriptions.allEvents")
+                    : t("subscriptions.promptBased")}
                 </Badge>
               </Group>
 
@@ -212,7 +217,7 @@ export function SubscriptionDetailPage({
                     onChange={(e) => setEditPrompt(e.target.value)}
                     rows={3}
                     autosize
-                    label="Subscription Prompt"
+                    label={t("subscriptions.subscriptionPromptLabel")}
                   />
                   <Group gap="xs">
                     <Button
@@ -221,7 +226,7 @@ export function SubscriptionDetailPage({
                       size="sm"
                       leftSection={<IconCheck size={16} />}
                     >
-                      Save
+                      {t("subscriptions.save")}
                     </Button>
                     <Button
                       onClick={handleCancelEdit}
@@ -229,7 +234,7 @@ export function SubscriptionDetailPage({
                       size="sm"
                       leftSection={<IconX size={16} />}
                     >
-                      Cancel
+                      {t("subscriptions.cancel")}
                     </Button>
                   </Group>
                 </Stack>
@@ -238,7 +243,7 @@ export function SubscriptionDetailPage({
                   {isPromptSubscription ? (
                     <Box>
                       <Text fw={500} size="sm" mb="xs">
-                        Subscription Prompt:
+                        {t("subscriptions.subscriptionPrompt")}
                       </Text>
                       <Text size="md" style={{ lineHeight: 1.6 }}>
                         "{(subscription as any).prompt}"
@@ -247,10 +252,10 @@ export function SubscriptionDetailPage({
                   ) : (
                     <Box>
                       <Text fw={500} size="sm" mb="xs">
-                        Subscription Type:
+                        {t("subscriptions.subscriptionTypeLabel")}
                       </Text>
                       <Text size="md" style={{ lineHeight: 1.6 }} c="purple.7">
-                        Subscribed to all events
+                        {t("subscriptions.subscribedToAll")}
                       </Text>
                     </Box>
                   )}
@@ -272,7 +277,9 @@ export function SubscriptionDetailPage({
                   )
                 }
               >
-                {subscription.isActive ? "Pause" : "Activate"}
+                {subscription.isActive
+                  ? t("subscriptions.pause")
+                  : t("subscriptions.activate")}
               </Button>
 
               {!editingPrompt && isPromptSubscription && (
@@ -283,7 +290,7 @@ export function SubscriptionDetailPage({
                   size="sm"
                   leftSection={<IconEdit size={16} />}
                 >
-                  Edit
+                  {t("subscriptions.edit")}
                 </Button>
               )}
 
@@ -294,7 +301,7 @@ export function SubscriptionDetailPage({
                 size="sm"
                 leftSection={<IconTrash size={16} />}
               >
-                Delete
+                {t("subscriptions.delete")}
               </Button>
             </Stack>
           </Group>
@@ -304,25 +311,27 @@ export function SubscriptionDetailPage({
           <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md">
             <Box>
               <Text fw={500} size="sm">
-                Email frequency:
+                {t("subscriptions.emailFrequency")}
               </Text>
               <Text size="sm" c="dimmed">
-                Every {subscription.emailFrequencyHours} hours
+                {t("subscriptions.everyHours", {
+                  hours: subscription.emailFrequencyHours,
+                })}
               </Text>
             </Box>
             <Box>
               <Text fw={500} size="sm">
-                Last email sent:
+                {t("subscriptions.lastEmailSent")}
               </Text>
               <Text size="sm" c="dimmed">
                 {subscription.lastEmailSent
                   ? formatDate(subscription.lastEmailSent)
-                  : "Never"}
+                  : t("subscriptions.never")}
               </Text>
             </Box>
             <Box>
               <Text fw={500} size="sm">
-                Next email scheduled:
+                {t("subscriptions.nextEmailScheduled")}
               </Text>
               <Text
                 size="sm"
@@ -343,9 +352,11 @@ export function SubscriptionDetailPage({
         <Card shadow="sm" padding="xl" radius="lg" withBorder>
           <Group justify="space-between" align="center" mb="lg">
             <Box>
-              <Title order={2}>Pending Events</Title>
+              <Title order={2}>{t("subscriptions.pendingTitle")}</Title>
               <Text c="dimmed" size="sm">
-                {subscription.totalQueuedEvents} events queued for next email
+                {t("subscriptions.eventsQueued", {
+                  count: subscription.totalQueuedEvents,
+                })}
               </Text>
             </Box>
             {subscription.totalQueuedEvents > 0 && (
@@ -355,7 +366,9 @@ export function SubscriptionDetailPage({
                 color="green"
                 leftSection={<IconMail size={16} />}
               >
-                {sendingEmail ? "Sending..." : "Send Email Now"}
+                {sendingEmail
+                  ? t("subscriptions.sending")
+                  : t("subscriptions.sendNow")}
               </Button>
             )}
           </Group>
@@ -366,11 +379,9 @@ export function SubscriptionDetailPage({
                 📭
               </Text>
               <Text size="lg" fw={500} mb="xs">
-                No pending events
+                {t("subscriptions.noPending")}
               </Text>
-              <Text c="dimmed">
-                Events matching your subscription will appear here
-              </Text>
+              <Text c="dimmed">{t("subscriptions.noPendingDescription")}</Text>
             </Box>
           ) : (
             <Stack gap="md">
@@ -380,20 +391,25 @@ export function SubscriptionDetailPage({
                     <Box style={{ flex: 1 }}>
                       <Group gap="xs" align="center" mb="xs">
                         <Text fw={500} size="sm">
-                          {queueItem.event?.title || "Event not found"}
+                          {queueItem.event?.title ||
+                            t("subscriptions.eventNotFound")}
                         </Text>
                         <Badge size="sm" color="blue">
-                          {(queueItem.matchScore * 100).toFixed(0)}% match
+                          {t("subscriptions.match", {
+                            score: (queueItem.matchScore * 100).toFixed(0),
+                          })}
                         </Badge>
                       </Group>
                       <Text size="xs" c="dimmed" mb="xs">
                         📅{" "}
                         {queueItem.event
                           ? formatDate(queueItem.event.eventDate)
-                          : "Unknown date"}
+                          : t("subscriptions.unknownDate")}
                       </Text>
                       <Text size="xs" c="dimmed">
-                        Queued: {formatDate(queueItem.queuedAt)}
+                        {t("subscriptions.queuedAt", {
+                          date: formatDate(queueItem.queuedAt),
+                        })}
                       </Text>
                       {queueItem.event?.description && (
                         <EventDescription
