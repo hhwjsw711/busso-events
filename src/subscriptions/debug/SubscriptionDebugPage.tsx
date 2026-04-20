@@ -17,6 +17,7 @@ import {
 import { IconArrowLeft, IconSearch } from "@tabler/icons-react";
 import { SubscriptionMatchingTest } from "./components/SubscriptionMatchingTest";
 import { SubscriptionStats } from "./components/SubscriptionStats";
+import { useTranslation } from "react-i18next";
 
 // Type guards for subscription types
 function isPromptSubscription(
@@ -37,6 +38,7 @@ interface SubscriptionDebugPageProps {
 }
 
 export function SubscriptionDebugPage({ onBack }: SubscriptionDebugPageProps) {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSubscriptionId, setSelectedSubscriptionId] =
     useState<Id<"subscriptions"> | null>(null);
@@ -68,19 +70,19 @@ export function SubscriptionDebugPage({ onBack }: SubscriptionDebugPageProps) {
             variant="subtle"
             onClick={onBack}
           >
-            Back to Admin
+            {t("subscriptionDebug.backToAdmin")}
           </Button>
-          <Title order={1}>Subscription Debug</Title>
+          <Title order={1}>{t("subscriptionDebug.title")}</Title>
         </Group>
 
         <SubscriptionStats />
 
         <Card shadow="sm" padding="xl" radius="lg" withBorder>
           <Title order={2} mb="lg">
-            Search Subscriptions
+            {t("subscriptionDebug.searchSubscriptions")}
           </Title>
           <TextInput
-            placeholder="Search by prompt or user ID..."
+            placeholder={t("subscriptionDebug.searchPlaceholder")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             leftSection={<IconSearch size={16} />}
@@ -110,26 +112,30 @@ export function SubscriptionDebugPage({ onBack }: SubscriptionDebugPageProps) {
                         {isPromptSubscription(subscription) ? (
                           <>
                             <Badge color="orange" size="xs" mr="xs">
-                              Prompt
+                              {t("subscriptionDebug.prompt")}
                             </Badge>
                             {(subscription as any).prompt}
                           </>
                         ) : (
                           <>
                             <Badge color="purple" size="xs" mr="xs">
-                              All Events
+                              {t("subscriptionDebug.allEvents")}
                             </Badge>
-                            All Events Subscription
+                            {t("subscriptionDebug.allEventsSubscription")}
                           </>
                         )}
                       </Text>
                       <Text size="xs" c="dimmed">
-                        User: {subscription.userId} | Status:{" "}
-                        {subscription.isActive ? "Active" : "Inactive"}
+                        {t("subscriptionDebug.user")} {subscription.userId}{" "}
+                        {t("subscriptionDebug.status")}{" "}
+                        {subscription.isActive
+                          ? t("subscriptionDebug.active")
+                          : t("subscriptionDebug.inactive")}
                       </Text>
                     </Box>
                     <Text size="xs" c="dimmed">
-                      {subscription.emailFrequencyHours}h frequency
+                      {subscription.emailFrequencyHours}
+                      {t("subscriptionDebug.frequency")}
                     </Text>
                   </Group>
                 </Card>
@@ -137,7 +143,7 @@ export function SubscriptionDebugPage({ onBack }: SubscriptionDebugPageProps) {
             </Stack>
           ) : (
             <Text c="dimmed" ta="center" py="xl">
-              No subscriptions found
+              {t("subscriptionDebug.noSubscriptionsFound")}
             </Text>
           )}
         </Card>

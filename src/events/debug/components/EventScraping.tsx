@@ -16,12 +16,14 @@ import {
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useTranslation } from "react-i18next";
 
 interface DebugSectionProps {
   eventId: Id<"events">;
 }
 
 export function EventScraping({ eventId }: DebugSectionProps) {
+  const { t } = useTranslation();
   const workpoolStatus = useQuery(api.events.events.getWorkpoolStatus, {
     eventId,
   });
@@ -33,7 +35,7 @@ export function EventScraping({ eventId }: DebugSectionProps) {
   return (
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Group justify="space-between" align="center" mb="lg">
-        <Title order={2}>Event Scraping</Title>
+        <Title order={2}>{t("eventDebug.eventScraping")}</Title>
         <Button
           onClick={() => {
             setIsScraping(true);
@@ -41,12 +43,14 @@ export function EventScraping({ eventId }: DebugSectionProps) {
               .then((result) => {
                 if (result.success) {
                   notifications.show({
-                    message: "Event scraped successfully",
+                    message: t("eventDebug.scrapeSuccess"),
                     color: "green",
                   });
                 } else {
                   notifications.show({
-                    message: `Scraping failed: ${result.message}`,
+                    message: t("eventDebug.scrapeFailed", {
+                      message: result.message,
+                    }),
                     color: "red",
                   });
                 }
@@ -59,32 +63,34 @@ export function EventScraping({ eventId }: DebugSectionProps) {
           leftSection={<IconSearch size={16} />}
           loading={isScraping}
         >
-          {isScraping ? "Scraping..." : "Scrape Now"}
+          {isScraping
+            ? t("eventDebug.scrapeNowLoading")
+            : t("eventDebug.scrapeNow")}
         </Button>
       </Group>
 
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md" mb="lg">
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Workpool ID:
+            {t("eventDebug.workpoolId")}:
           </Text>
           <Text ff="monospace" size="sm">
-            {workpoolStatus?.workId || "Not queued"}
+            {workpoolStatus?.workId || t("eventDebug.notQueued")}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Enqueued At:
+            {t("eventDebug.enqueuedAt")}:
           </Text>
           <Text size="sm">
             {workpoolStatus?.enqueuedAt
               ? formatDate(workpoolStatus.enqueuedAt)
-              : "Not queued"}
+              : t("eventDebug.notQueued")}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Status:
+            {t("eventDebug.status")}:
           </Text>
           <Group gap="xs">
             {workpoolStatus?.status ? (
@@ -105,7 +111,8 @@ export function EventScraping({ eventId }: DebugSectionProps) {
                 {workpoolStatus.status.retryCount !== undefined &&
                   workpoolStatus.status.retryCount > 0 && (
                     <Text size="xs" c="dimmed">
-                      Retries: {workpoolStatus.status.retryCount}
+                      {t("eventDebug.retryCount")}:{" "}
+                      {workpoolStatus.status.retryCount}
                     </Text>
                   )}
               </>
@@ -113,14 +120,14 @@ export function EventScraping({ eventId }: DebugSectionProps) {
               <Badge color="red">Error: {workpoolStatus.error}</Badge>
             ) : (
               <Text size="sm" c="gray.6">
-                Not queued
+                {t("eventDebug.notQueued")}
               </Text>
             )}
           </Group>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Queue Position:
+            {t("eventDebug.queuePosition")}:
           </Text>
           <Text size="sm">
             {workpoolStatus?.status?.state === "pending" &&
@@ -135,11 +142,9 @@ export function EventScraping({ eventId }: DebugSectionProps) {
         <Text size="sm" c="yellow.8">
           🕷️{" "}
           <Text span fw={500}>
-            Event scraping
+            {t("eventDebug.eventScraping")}
           </Text>{" "}
-          fetches the latest content from the event URL to enhance the event
-          description and extract structured data. The workpool processes
-          scraping jobs with a maximum parallelism of 5 to respect rate limits.
+          {t("eventDebug.scrapingDescription")}
         </Text>
       </Card>
     </Card>

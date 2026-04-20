@@ -9,8 +9,10 @@ import {
   Loader,
   Center,
 } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 
 export function SubscriptionStats() {
+  const { t } = useTranslation();
   const stats = useQuery(
     api.subscriptions.subscriptionsAdmin.getSubscriptionStats,
   );
@@ -28,7 +30,7 @@ export function SubscriptionStats() {
   return (
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Title order={2} mb="lg">
-        Subscription Statistics
+        {t("subscriptionStats.title")}
       </Title>
 
       <SimpleGrid cols={{ base: 2, md: 4 }} spacing="lg">
@@ -37,7 +39,7 @@ export function SubscriptionStats() {
             {stats.total}
           </Text>
           <Text size="sm" c="dimmed">
-            Total Subscriptions
+            {t("subscriptionStats.totalSubscriptions")}
           </Text>
         </Box>
 
@@ -46,7 +48,7 @@ export function SubscriptionStats() {
             {stats.active}
           </Text>
           <Text size="sm" c="dimmed">
-            Active
+            {t("subscriptionStats.active")}
           </Text>
         </Box>
 
@@ -55,7 +57,7 @@ export function SubscriptionStats() {
             {stats.inactive}
           </Text>
           <Text size="sm" c="dimmed">
-            Inactive
+            {t("subscriptionStats.inactive")}
           </Text>
         </Box>
 
@@ -64,13 +66,13 @@ export function SubscriptionStats() {
             {stats.totalQueuedEvents}
           </Text>
           <Text size="sm" c="dimmed">
-            Queued Events
+            {t("subscriptionStats.queuedEvents")}
           </Text>
         </Box>
       </SimpleGrid>
 
       <Title order={3} mt="xl" mb="md">
-        Subscription Types
+        {t("subscriptionStats.subscriptionTypes")}
       </Title>
       <SimpleGrid cols={{ base: 2, md: 2 }} spacing="lg">
         <Box ta="center">
@@ -78,7 +80,7 @@ export function SubscriptionStats() {
             {stats.promptSubscriptions}
           </Text>
           <Text size="sm" c="dimmed">
-            Prompt-based
+            {t("subscriptionStats.promptBased")}
           </Text>
         </Box>
 
@@ -87,7 +89,7 @@ export function SubscriptionStats() {
             {stats.allEventsSubscriptions}
           </Text>
           <Text size="sm" c="dimmed">
-            All Events
+            {t("subscriptionStats.allEvents")}
           </Text>
         </Box>
       </SimpleGrid>
@@ -98,7 +100,7 @@ export function SubscriptionStats() {
             {stats.readyForEmail}
           </Text>
           <Text size="sm" c="dimmed">
-            Ready for Email
+            {t("subscriptionStats.readyForEmail")}
           </Text>
         </Box>
 
@@ -107,7 +109,7 @@ export function SubscriptionStats() {
             {stats.uniqueUsers}
           </Text>
           <Text size="sm" c="dimmed">
-            Unique Users
+            {t("subscriptionStats.uniqueUsers")}
           </Text>
         </Box>
 
@@ -116,7 +118,7 @@ export function SubscriptionStats() {
             {(stats.avgEmailFrequency || 0).toFixed(1)}h
           </Text>
           <Text size="sm" c="dimmed">
-            Avg Email Frequency
+            {t("subscriptionStats.avgEmailFrequency")}
           </Text>
         </Box>
       </SimpleGrid>

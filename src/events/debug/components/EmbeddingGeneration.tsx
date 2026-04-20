@@ -16,12 +16,14 @@ import {
 } from "@mantine/core";
 import { IconBrain } from "@tabler/icons-react";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useTranslation } from "react-i18next";
 
 interface DebugSectionProps {
   eventId: Id<"events">;
 }
 
 export function EmbeddingGeneration({ eventId }: DebugSectionProps) {
+  const { t } = useTranslation();
   const embeddingWorkpoolStatus = useQuery(
     api.events.events.getEmbeddingWorkpoolStatus,
     {
@@ -38,7 +40,7 @@ export function EmbeddingGeneration({ eventId }: DebugSectionProps) {
   return (
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Group justify="space-between" align="center" mb="lg">
-        <Title order={2}>Embedding Generation</Title>
+        <Title order={2}>{t("eventDebug.embeddingGeneration")}</Title>
         <Button
           onClick={() => {
             setIsGeneratingEmbedding(true);
@@ -46,12 +48,12 @@ export function EmbeddingGeneration({ eventId }: DebugSectionProps) {
               .then((result) => {
                 if (result.success) {
                   notifications.show({
-                    message: "Embedding generated successfully",
+                    message: t("eventDebug.generateSuccess"),
                     color: "green",
                   });
                 } else {
                   notifications.show({
-                    message: "Embedding generation failed",
+                    message: t("eventDebug.generateFailed"),
                     color: "red",
                   });
                 }
@@ -64,32 +66,34 @@ export function EmbeddingGeneration({ eventId }: DebugSectionProps) {
           leftSection={<IconBrain size={16} />}
           loading={isGeneratingEmbedding}
         >
-          {isGeneratingEmbedding ? "Generating..." : "Generate Now"}
+          {isGeneratingEmbedding
+            ? t("eventDebug.generateNowLoading")
+            : t("eventDebug.generateNow")}
         </Button>
       </Group>
 
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md" mb="lg">
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Workpool ID:
+            {t("eventDebug.workpoolId")}:
           </Text>
           <Text ff="monospace" size="sm">
-            {embeddingWorkpoolStatus?.workId || "Not queued"}
+            {embeddingWorkpoolStatus?.workId || t("eventDebug.notQueued")}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Enqueued At:
+            {t("eventDebug.enqueuedAt")}:
           </Text>
           <Text size="sm">
             {embeddingWorkpoolStatus?.enqueuedAt
               ? formatDate(embeddingWorkpoolStatus.enqueuedAt)
-              : "Not queued"}
+              : t("eventDebug.notQueued")}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Status:
+            {t("eventDebug.status")}:
           </Text>
           <Group gap="xs">
             {embeddingWorkpoolStatus?.status ? (
@@ -110,7 +114,8 @@ export function EmbeddingGeneration({ eventId }: DebugSectionProps) {
                 {embeddingWorkpoolStatus.status.retryCount !== undefined &&
                   embeddingWorkpoolStatus.status.retryCount > 0 && (
                     <Text size="xs" c="dimmed">
-                      Retries: {embeddingWorkpoolStatus.status.retryCount}
+                      {t("eventDebug.retryCount")}:{" "}
+                      {embeddingWorkpoolStatus.status.retryCount}
                     </Text>
                   )}
               </>
@@ -118,14 +123,14 @@ export function EmbeddingGeneration({ eventId }: DebugSectionProps) {
               <Badge color="red">Error: {embeddingWorkpoolStatus.error}</Badge>
             ) : (
               <Text size="sm" c="gray.6">
-                Not queued
+                {t("eventDebug.notQueued")}
               </Text>
             )}
           </Group>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Queue Position:
+            {t("eventDebug.queuePosition")}:
           </Text>
           <Text size="sm">
             {embeddingWorkpoolStatus?.status?.state === "pending" &&
@@ -140,12 +145,9 @@ export function EmbeddingGeneration({ eventId }: DebugSectionProps) {
         <Text size="sm" c="grape.8">
           🧠{" "}
           <Text span fw={500}>
-            Automatic embedding generation
+            {t("eventDebug.embeddingGeneration")}
           </Text>{" "}
-          is queued in a workpool after an event is scraped. The workpool
-          processes embedding jobs with a maximum parallelism of 2 to avoid
-          overwhelming the OpenAI API, generating vector embeddings from the
-          event description for semantic search and subscription matching.
+          {t("eventDebug.embeddingDescription")}
         </Text>
       </Card>
     </Card>

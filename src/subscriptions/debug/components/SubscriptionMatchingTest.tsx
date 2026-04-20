@@ -18,6 +18,7 @@ import {
   Loader,
 } from "@mantine/core";
 import { IconRefresh, IconMail } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 // Type guards for subscription types
 function isPromptSubscription(
@@ -40,6 +41,7 @@ interface SubscriptionMatchingTestProps {
 export function SubscriptionMatchingTest({
   subscriptionId,
 }: SubscriptionMatchingTestProps) {
+  const { t } = useTranslation();
   const allSubscriptions = useQuery(
     api.subscriptions.subscriptionsAdmin.getAllSubscriptions,
   );
@@ -71,7 +73,7 @@ export function SubscriptionMatchingTest({
     return (
       <Card shadow="sm" padding="xl" radius="lg" withBorder>
         <Text c="dimmed" ta="center" py="xl">
-          Subscription not found
+          {t("subscriptionDebug.subscriptionNotFound")}
         </Text>
       </Card>
     );
@@ -80,7 +82,7 @@ export function SubscriptionMatchingTest({
   const loadPreview = () => {
     if (!isPromptSubscription(subscription)) {
       notifications.show({
-        message: "Preview is only available for prompt-based subscriptions",
+        message: t("subscriptionDebug.previewOnlyPrompt"),
         color: "red",
       });
       return;
@@ -96,7 +98,9 @@ export function SubscriptionMatchingTest({
   return (
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Group justify="space-between" align="center" mb="lg">
-        <Title order={2}>Subscription Matching Test</Title>
+        <Title order={2}>
+          {t("subscriptionDebug.subscriptionMatchingTest")}
+        </Title>
         <Group gap="xs">
           {isPromptSubscription(subscription) && (
             <Button
@@ -106,7 +110,7 @@ export function SubscriptionMatchingTest({
               loading={isLoadingPreview}
               variant="light"
             >
-              Preview Matches
+              {t("subscriptionDebug.previewMatches")}
             </Button>
           )}
           <Button
@@ -116,12 +120,12 @@ export function SubscriptionMatchingTest({
                 .then((result) => {
                   if (result) {
                     notifications.show({
-                      message: "Matching test completed successfully",
+                      message: t("subscriptionDebug.matchingTestSuccess"),
                       color: "green",
                     });
                   } else {
                     notifications.show({
-                      message: "Subscription not found",
+                      message: t("subscriptionDebug.subscriptionNotFound"),
                       color: "red",
                     });
                   }
@@ -133,7 +137,7 @@ export function SubscriptionMatchingTest({
             leftSection={<IconMail size={16} />}
             loading={isTestingMatching}
           >
-            Test Matching
+            {t("subscriptionDebug.testMatching")}
           </Button>
         </Group>
       </Group>
@@ -141,45 +145,47 @@ export function SubscriptionMatchingTest({
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md" mb="lg">
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Subscription Type:
+            {t("subscriptionDebug.subscriptionType")}
           </Text>
           <Text size="sm" style={{ lineHeight: 1.6 }}>
             {isPromptSubscription(subscription) ? (
               <>
                 <Badge color="orange" size="sm" mr="xs">
-                  Prompt-based
+                  {t("subscriptionDebug.promptBased")}
                 </Badge>
                 <br />"{(subscription as any).prompt}"
               </>
             ) : (
               <Badge color="purple" size="sm">
-                All Events
+                {t("subscriptionDebug.allEvents")}
               </Badge>
             )}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Status:
+            {t("subscriptionDebug.status")}
           </Text>
           <Badge color={subscription.isActive ? "green" : "gray"} size="sm">
-            {subscription.isActive ? "Active" : "Inactive"}
+            {subscription.isActive
+              ? t("subscriptionDebug.active")
+              : t("subscriptionDebug.inactive")}
           </Badge>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Email Frequency:
+            {t("subscriptionDebug.emailFrequency")}
           </Text>
           <Text size="sm">{subscription.emailFrequencyHours}h</Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Last Email:
+            {t("subscriptionDebug.lastEmail")}
           </Text>
           <Text size="sm">
             {subscription.lastEmailSent
               ? formatDate(subscription.lastEmailSent)
-              : "Never"}
+              : t("eventDebug.never")}
           </Text>
         </Box>
       </SimpleGrid>
@@ -187,7 +193,9 @@ export function SubscriptionMatchingTest({
       {previewEvents && (
         <Box>
           <Title order={3} mb="md">
-            Preview Results ({previewEvents.length} events)
+            {t("subscriptionDebug.previewResults", {
+              count: previewEvents.length,
+            })}
           </Title>
           {previewEvents.length > 0 ? (
             <Stack gap="sm">
@@ -225,7 +233,7 @@ export function SubscriptionMatchingTest({
                       </Badge>
                       {event.meetsThreshold && (
                         <Badge color="green" size="xs">
-                          ✓ Match
+                          ✓ {t("subscriptionDebug.match")}
                         </Badge>
                       )}
                     </Group>
@@ -234,13 +242,15 @@ export function SubscriptionMatchingTest({
               ))}
               {previewEvents.length > 5 && (
                 <Text size="sm" c="dimmed" ta="center">
-                  ... and {previewEvents.length - 5} more events
+                  {t("subscriptionDebug.moreEvents", {
+                    count: previewEvents.length - 5,
+                  })}
                 </Text>
               )}
             </Stack>
           ) : (
             <Text c="dimmed" ta="center" py="xl">
-              No matching events found
+              {t("subscriptionDebug.noMatchingEvents")}
             </Text>
           )}
         </Box>

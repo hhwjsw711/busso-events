@@ -151,6 +151,7 @@ busso-events/
 - **语言检测顺序**：localStorage -> 浏览器偏好 -> 默认为英文
 - **语言切换器**：在 Header（已登录）和浮动 Header（公开页面）中实现为下拉菜单
 - **已翻译页面**：HomePage、LoginPage、EventDetailPublic、Header、EventGallery、EventDetailPage、SearchBar、DateFilter、SignInForm、SubscriptionsPage、CreateSubscriptionPage、SubscriptionDetailPage
+- **已翻译管理后台页面**：Admin、Sources、SourceDetail、EventDebugPage、SubscriptionDebugPage、WorkpoolDebugPage
 
 ## 5. 后端架构
 
@@ -614,6 +615,23 @@ Convex 独立承载后端函数与数据，与静态前端部署分离。
 - `convex/emails/emailsInternal.ts`
 - `convex/crons.ts`
 
-## 16. 一句话总结
+## 16. 近期更新 (2026-04)
+
+### 国际化 (i18n) 完成
+
+已完成所有前端页面的国际化，包括：
+
+- **翻译文件**：`src/locales/en.json` 和 `src/locales/zh.json`
+- **公开页面**：HomePage、LoginPage、EventDetail、SearchBar、DateFilter 等
+- **用户页面**：SubscriptionsPage、CreateSubscriptionPage、SubscriptionDetailPage
+- **管理后台**：Admin、Sources、SourceDetail、EventDebugPage、SubscriptionDebugPage、WorkpoolDebugPage
+
+翻译 key 命名遵循 `page.section.key` 模式，例如：
+
+- `eventDebug.scrapeSuccess` - 活动抓取成功
+- `subscriptionDebug.previewOnlyPrompt` - 预览仅适用于基于描述的订阅
+- `workpoolDebug.queuedJobsTitle` - 排队的任务
+
+### 17. 一句话总结
 
 这个项目本质上是一个以 Convex 为中心的活动聚合系统：React 前端比较轻，Convex 负责数据与流程编排，核心架构围绕异步采集、详情补全、语义匹配和延迟邮件通知展开。

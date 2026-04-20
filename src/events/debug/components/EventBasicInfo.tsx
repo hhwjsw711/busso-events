@@ -19,12 +19,14 @@ import {
 } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useTranslation } from "react-i18next";
 
 interface DebugSectionProps {
   eventId: Id<"events">;
 }
 
 export function EventBasicInfo({ eventId }: DebugSectionProps) {
+  const { t } = useTranslation();
   const event = useQuery(api.events.events.getById, { id: eventId });
   const updateEvent = useMutation(api.events.eventsAdmin.updateEvent);
   const deleteEvent = useMutation(api.events.eventsAdmin.deleteEvent);
@@ -122,10 +124,10 @@ export function EventBasicInfo({ eventId }: DebugSectionProps) {
                 size="sm"
                 loading={isUpdating}
               >
-                {isUpdating ? "Saving..." : "Save"}
+                {isUpdating ? t("eventDebug.saving") : t("eventDebug.save")}
               </Button>
               <Button onClick={handleCancel} variant="default" size="sm">
-                Cancel
+                {t("eventDebug.cancel")}
               </Button>
             </Group>
           </Stack>
@@ -134,11 +136,13 @@ export function EventBasicInfo({ eventId }: DebugSectionProps) {
             <Box style={{ flex: 1 }}>
               {type === "datetime" ? (
                 <Text>
-                  {typeof value === "number" ? formatDate(value) : "Not set"}
+                  {typeof value === "number"
+                    ? formatDate(value)
+                    : t("eventDebug.notSet")}
                 </Text>
               ) : (
                 <Text style={{ whiteSpace: "pre-wrap" }}>
-                  {value || "Not set"}
+                  {value || t("eventDebug.notSet")}
                 </Text>
               )}
             </Box>
@@ -148,7 +152,7 @@ export function EventBasicInfo({ eventId }: DebugSectionProps) {
               size="xs"
               disabled={isUpdating}
             >
-              Edit
+              {t("eventDebug.edit")}
             </Button>
           </Group>
         )}
@@ -160,22 +164,17 @@ export function EventBasicInfo({ eventId }: DebugSectionProps) {
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Group justify="space-between" align="center" mb="lg">
         <Text fw={700} size="xl">
-          Event Details
+          {t("eventDebug.eventDetails")}
         </Text>
         <Button
           onClick={() => {
-            if (
-              !confirm(
-                "Are you sure you want to delete this event? This action cannot be undone.",
-              )
-            )
-              return;
+            if (!confirm(t("eventDebug.deleteConfirm"))) return;
 
             setIsDeleting(true);
             deleteEvent({ id: eventId })
               .then(() => {
                 notifications.show({
-                  message: "Event deleted successfully",
+                  message: t("eventDebug.deletedSuccess"),
                   color: "green",
                 });
                 window.history.back();
@@ -189,23 +188,27 @@ export function EventBasicInfo({ eventId }: DebugSectionProps) {
           loading={isDeleting}
           disabled={isDeleting}
         >
-          {isDeleting ? "Deleting..." : "Delete Event"}
+          {isDeleting ? t("eventDebug.deleting") : t("eventDebug.deleteEvent")}
         </Button>
       </Group>
 
       <Stack gap={0}>
-        {renderEditableField("title", "Title", event.title)}
+        {renderEditableField("title", t("eventDebug.title"), event.title)}
         {renderEditableField(
           "description",
-          "Description",
+          t("eventDebug.description"),
           event.description,
           "textarea",
         )}
-        {renderEditableField("url", "URL", event.url)}
-        {renderEditableField("imageUrl", "Image URL", event.imageUrl)}
+        {renderEditableField("url", t("eventDebug.url"), event.url)}
+        {renderEditableField(
+          "imageUrl",
+          t("eventDebug.imageUrl"),
+          event.imageUrl,
+        )}
         {renderEditableField(
           "eventDate",
-          "Event Date",
+          t("eventDebug.eventDate"),
           event.eventDate,
           "datetime",
         )}
@@ -216,7 +219,7 @@ export function EventBasicInfo({ eventId }: DebugSectionProps) {
       <SimpleGrid cols={{ base: 1, md: 2 }} spacing="md">
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Event ID:
+            {t("eventDebug.eventId")}:
           </Text>
           <Text ff="monospace" size="sm">
             {event._id}
@@ -224,30 +227,34 @@ export function EventBasicInfo({ eventId }: DebugSectionProps) {
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Creation Time:
+            {t("eventDebug.creationTime")}:
           </Text>
           <Text size="sm">{formatDate(event._creationTime)}</Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Last Scraped:
+            {t("eventDebug.lastScraped")}:
           </Text>
           <Text size="sm">
-            {event.lastScraped ? formatDate(event.lastScraped) : "Never"}
+            {event.lastScraped
+              ? formatDate(event.lastScraped)
+              : t("eventDebug.never")}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Scheduled Embedding:
+            {t("eventDebug.scheduledEmbedding")}:
           </Text>
           <Text size="sm">
-            {event.descriptionEmbedding ? "Generated" : "Not generated"}
+            {event.descriptionEmbedding
+              ? t("eventDebug.generated")
+              : t("eventDebug.notGenerated")}
           </Text>
         </Box>
         {event.sourceId && (
           <Box>
             <Text fw={500} size="sm" c="gray.7">
-              Source ID:
+              {t("eventDebug.sourceId")}:
             </Text>
             <Text ff="monospace" size="sm">
               {event.sourceId}

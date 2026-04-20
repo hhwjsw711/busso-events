@@ -59,6 +59,32 @@ export function WorkpoolDebugPage({
   const [isClearing, setIsClearing] = useState(false);
   const onApiError = useAPIErrorHandler();
 
+  const getWorkpoolName = (type: WorkpoolType) => {
+    switch (type) {
+      case "eventScrapeWorkpool":
+        return t("workpoolNames.eventScrapeWorkpool");
+      case "eventEmbeddingWorkpool":
+        return t("workpoolNames.eventEmbeddingWorkpool");
+      case "subscriptionMatchWorkpool":
+        return t("workpoolNames.subscriptionMatchWorkpool");
+      default:
+        return t("workpoolNames.subscriptionEmailWorkpool");
+    }
+  };
+
+  const getWorkpoolDescription = (type: WorkpoolType) => {
+    switch (type) {
+      case "eventScrapeWorkpool":
+        return t("workpoolDescriptions.eventScrapeWorkpool");
+      case "eventEmbeddingWorkpool":
+        return t("workpoolDescriptions.eventEmbeddingWorkpool");
+      case "subscriptionMatchWorkpool":
+        return t("workpoolDescriptions.subscriptionMatchWorkpool");
+      default:
+        return t("workpoolDescriptions.subscriptionEmailWorkpool");
+    }
+  };
+
   const getWorkpoolIcon = (type: WorkpoolType) => {
     switch (type) {
       case "eventScrapeWorkpool":
@@ -122,7 +148,7 @@ export function WorkpoolDebugPage({
               <Group gap="sm" mb="xs">
                 <Text size="2xl">{getWorkpoolIcon(workpoolType)}</Text>
                 <Title order={1} size="2rem">
-                  {workpoolStatus.name}
+                  {getWorkpoolName(workpoolType)}
                 </Title>
                 <Badge color={getWorkpoolColor(workpoolType)} size="lg">
                   {t("workpoolDebug.queued", {
@@ -131,7 +157,7 @@ export function WorkpoolDebugPage({
                 </Badge>
               </Group>
               <Text c="dimmed" size="lg" mb="md">
-                {workpoolStatus.description}
+                {getWorkpoolDescription(workpoolType)}
               </Text>
             </Box>
             <Group gap="sm">

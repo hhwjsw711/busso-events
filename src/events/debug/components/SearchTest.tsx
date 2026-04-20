@@ -23,12 +23,14 @@ import {
   IconAlertCircle,
 } from "@tabler/icons-react";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useTranslation } from "react-i18next";
 
 interface DebugSectionProps {
   eventId: Id<"events">;
 }
 
 export function SearchTest({ eventId }: DebugSectionProps) {
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<any[] | null>(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -40,7 +42,7 @@ export function SearchTest({ eventId }: DebugSectionProps) {
   const handleSearch = async () => {
     if (!searchTerm.trim()) {
       notifications.show({
-        message: "Please enter a search term",
+        message: t("eventDebug.pleaseEnterSearch"),
         color: "red",
       });
       return;
@@ -65,18 +67,18 @@ export function SearchTest({ eventId }: DebugSectionProps) {
 
       if (eventFound) {
         notifications.show({
-          message: `✅ Event found in search results! ${currentEventInResults?._searchType ? `(${currentEventInResults._searchType} search)` : ""}`,
+          message: `✅ ${t("eventDebug.eventAppears")} ${currentEventInResults?._searchType ? `(${currentEventInResults._searchType} search)` : ""}`,
           color: "green",
         });
       } else {
         notifications.show({
-          message: "❌ Event not found in search results",
+          message: `❌ ${t("eventDebug.eventNotAppears")}`,
           color: "red",
         });
       }
     } catch (error) {
       console.error("Search test failed:", error);
-      setSearchError("Search test failed. Please try again.");
+      setSearchError(t("eventDebug.searchFailed"));
     } finally {
       setIsSearching(false);
     }
@@ -91,7 +93,7 @@ export function SearchTest({ eventId }: DebugSectionProps) {
   return (
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Group justify="space-between" align="center" mb="lg">
-        <Title order={2}>Search Test</Title>
+        <Title order={2}>{t("eventDebug.searchTest")}</Title>
         <Badge
           color={isSemanticSearch ? "blue" : "gray"}
           leftSection={
@@ -102,14 +104,16 @@ export function SearchTest({ eventId }: DebugSectionProps) {
             )
           }
         >
-          {isSemanticSearch ? "AI + Text Search" : "Text Search Only"}
+          {isSemanticSearch
+            ? t("eventDebug.aiTextSearch")
+            : t("eventDebug.textSearchOnly")}
         </Badge>
       </Group>
 
       <Stack gap="md">
         <Group gap="sm">
           <TextInput
-            placeholder="Enter search term to test..."
+            placeholder={t("eventDebug.enterSearchTerm")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.currentTarget.value)}
             onKeyDown={(e) => {
@@ -125,7 +129,9 @@ export function SearchTest({ eventId }: DebugSectionProps) {
             loading={isSearching}
             disabled={!searchTerm.trim() || isSearching}
           >
-            {isSearching ? "Searching..." : "Test Search"}
+            {isSearching
+              ? t("eventDebug.searching")
+              : t("eventDebug.testSearch")}
           </Button>
         </Group>
 
@@ -139,7 +145,7 @@ export function SearchTest({ eventId }: DebugSectionProps) {
           <Card bg="gray.0" padding="md" radius="md">
             <Group justify="space-between" align="center" mb="sm">
               <Text fw={500} size="sm">
-                Search Results: {searchResults.length} events found
+                {t("eventDebug.searchResults", { count: searchResults.length })}
               </Text>
               <Badge
                 color={isEventFound ? "green" : "red"}
@@ -147,7 +153,9 @@ export function SearchTest({ eventId }: DebugSectionProps) {
                   isEventFound ? <IconCheck size={12} /> : <IconX size={12} />
                 }
               >
-                {isEventFound ? "Event Found" : "Event Not Found"}
+                {isEventFound
+                  ? t("eventDebug.eventFound")
+                  : t("eventDebug.eventNotFound")}
               </Badge>
             </Group>
 
@@ -162,7 +170,7 @@ export function SearchTest({ eventId }: DebugSectionProps) {
               >
                 <Group justify="space-between" align="center">
                   <Text size="sm" fw={500} c="green.8">
-                    ✅ This event appears in search results
+                    ✅ {t("eventDebug.eventAppears")}
                   </Text>
                   <Group gap="xs">
                     {currentEventInResults._searchType && (
@@ -190,11 +198,10 @@ export function SearchTest({ eventId }: DebugSectionProps) {
                 }}
               >
                 <Text size="sm" fw={500} c="red.8">
-                  ❌ This event does not appear in the search results
+                  ❌ {t("eventDebug.eventNotAppears")}
                 </Text>
                 <Text size="xs" c="red.6" mt="xs">
-                  Try different search terms or check if the event content
-                  matches what users might search for.
+                  {t("eventDebug.tryDifferentSearch")}
                 </Text>
               </Box>
             )}
@@ -209,7 +216,7 @@ export function SearchTest({ eventId }: DebugSectionProps) {
                 }}
               >
                 <Text size="sm" fw={500} c="yellow.8">
-                  ⚠️ No events found for this search term
+                  ⚠️ {t("eventDebug.noEventsFound")}
                 </Text>
               </Box>
             )}
@@ -220,12 +227,9 @@ export function SearchTest({ eventId }: DebugSectionProps) {
           <Text size="sm" c="violet.8">
             🔍{" "}
             <Text span fw={500}>
-              Search Test
+              {t("eventDebug.searchTest")}
             </Text>{" "}
-            uses the same search logic as the main dashboard. It combines text
-            search (title and description) with AI-powered semantic search for
-            longer queries (4+ characters). This helps you understand if users
-            will find this event when searching.
+            {t("eventDebug.searchTestDescription")}
           </Text>
         </Card>
       </Stack>

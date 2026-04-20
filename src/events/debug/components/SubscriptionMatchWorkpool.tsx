@@ -16,12 +16,14 @@ import {
 } from "@mantine/core";
 import { IconRefresh } from "@tabler/icons-react";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useTranslation } from "react-i18next";
 
 interface DebugSectionProps {
   eventId: Id<"events">;
 }
 
 export function SubscriptionMatchWorkpool({ eventId }: DebugSectionProps) {
+  const { t } = useTranslation();
   const subscriptionMatchWorkpoolStatus = useQuery(
     api.events.events.getSubscriptionMatchWorkpoolStatus,
     { eventId },
@@ -36,7 +38,7 @@ export function SubscriptionMatchWorkpool({ eventId }: DebugSectionProps) {
   return (
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Group justify="space-between" align="center" mb="lg">
-        <Title order={2}>Subscription Matching</Title>
+        <Title order={2}>{t("eventDebug.subscriptionMatching")}</Title>
         <Button
           onClick={() => {
             setIsTriggeringMatching(true);
@@ -46,12 +48,12 @@ export function SubscriptionMatchWorkpool({ eventId }: DebugSectionProps) {
               .then((result) => {
                 if (result.success) {
                   notifications.show({
-                    message: "Subscription matching triggered successfully",
+                    message: t("eventDebug.triggerSuccess"),
                     color: "green",
                   });
                 } else {
                   notifications.show({
-                    message: "Failed to trigger subscription matching",
+                    message: t("eventDebug.triggerFailed"),
                     color: "red",
                   });
                 }
@@ -64,32 +66,35 @@ export function SubscriptionMatchWorkpool({ eventId }: DebugSectionProps) {
           leftSection={<IconRefresh size={16} />}
           loading={isTriggeringMatching}
         >
-          {isTriggeringMatching ? "Triggering..." : "Trigger Now"}
+          {isTriggeringMatching
+            ? t("eventDebug.triggerNowLoading")
+            : t("eventDebug.triggerNow")}
         </Button>
       </Group>
 
       <SimpleGrid cols={{ base: 1, md: 3 }} spacing="md" mb="lg">
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Workpool ID:
+            {t("eventDebug.workpoolId")}:
           </Text>
           <Text ff="monospace" size="sm">
-            {subscriptionMatchWorkpoolStatus?.workId || "Not queued"}
+            {subscriptionMatchWorkpoolStatus?.workId ||
+              t("eventDebug.notQueued")}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Enqueued At:
+            {t("eventDebug.enqueuedAt")}:
           </Text>
           <Text size="sm">
             {subscriptionMatchWorkpoolStatus?.enqueuedAt
               ? formatDate(subscriptionMatchWorkpoolStatus.enqueuedAt)
-              : "Not queued"}
+              : t("eventDebug.notQueued")}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Status:
+            {t("eventDebug.status")}:
           </Text>
           <Text size="sm">
             {subscriptionMatchWorkpoolStatus?.status ? (
@@ -121,13 +126,13 @@ export function SubscriptionMatchWorkpool({ eventId }: DebugSectionProps) {
                 Error: {subscriptionMatchWorkpoolStatus.error}
               </Badge>
             ) : (
-              <Badge color="gray">Not queued</Badge>
+              <Badge color="gray">{t("eventDebug.notQueued")}</Badge>
             )}
           </Text>
         </Box>
         <Box>
           <Text fw={500} size="sm" c="gray.7">
-            Queue Position:
+            {t("eventDebug.queuePosition")}:
           </Text>
           <Text size="sm">
             {subscriptionMatchWorkpoolStatus?.status?.state === "pending" &&
@@ -142,13 +147,9 @@ export function SubscriptionMatchWorkpool({ eventId }: DebugSectionProps) {
         <Text size="sm" c="blue.8">
           🎯{" "}
           <Text span fw={500}>
-            Subscription matching
+            {t("eventDebug.subscriptionMatching")}
           </Text>{" "}
-          is automatically queued in a workpool 8 hours after an event is
-          created or updated. The workpool processes subscription matching jobs
-          with a maximum parallelism of 1 to ensure consistent processing. It
-          checks this event against all active user subscriptions and adds
-          matching events to email queues.
+          {t("eventDebug.matchingDescription")}
         </Text>
       </Card>
     </Card>

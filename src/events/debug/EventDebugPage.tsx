@@ -11,6 +11,7 @@ import {
   Text,
 } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 interface EventDebugPageProps {
   eventId: string;
   onBack: () => void;
@@ -24,6 +25,7 @@ import { ScrapedData } from "./components/ScrapedData";
 import { EventPreview } from "./components/EventPreview";
 
 export function EventDebugPage({ eventId, onBack }: EventDebugPageProps) {
+  const { t } = useTranslation();
   // Cast the string eventId to proper Id type for Convex queries
   const typedEventId = eventId as Id<"events">;
   const event = useQuery(api.events.events.getById, { id: typedEventId });
@@ -40,13 +42,13 @@ export function EventDebugPage({ eventId, onBack }: EventDebugPageProps) {
     return (
       <Center py="xl">
         <Stack align="center" gap="md">
-          <Title order={3}>Event not found</Title>
+          <Title order={3}>{t("eventDebug.notFound")}</Title>
           <Button
             variant="subtle"
             onClick={onBack}
             leftSection={<IconArrowLeft size={16} />}
           >
-            Back
+            {t("eventDebug.back")}
           </Button>
         </Stack>
       </Center>
@@ -62,7 +64,7 @@ export function EventDebugPage({ eventId, onBack }: EventDebugPageProps) {
           onClick={onBack}
           style={{ alignSelf: "flex-start" }}
         >
-          Back
+          {t("eventDebug.back")}
         </Button>
 
         <EventBasicInfo eventId={typedEventId} />

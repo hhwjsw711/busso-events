@@ -5,12 +5,14 @@ import { EventDescription } from "../../EventDescription";
 import { Card, Title, Text, Group, Stack, Image } from "@mantine/core";
 import { IconCalendar, IconExternalLink } from "@tabler/icons-react";
 import { Id } from "../../../../convex/_generated/dataModel";
+import { useTranslation } from "react-i18next";
 
 interface DebugSectionProps {
   eventId: Id<"events">;
 }
 
 export function EventPreview({ eventId }: DebugSectionProps) {
+  const { t } = useTranslation();
   const event = useQuery(api.events.events.getById, { id: eventId });
 
   if (!event) return null;
@@ -18,7 +20,7 @@ export function EventPreview({ eventId }: DebugSectionProps) {
   return (
     <Card shadow="sm" padding="xl" radius="lg" withBorder>
       <Title order={2} mb="lg">
-        Event Preview
+        {t("eventDebug.eventPreview")}
       </Title>
       <Card withBorder padding="lg" radius="md">
         {event.imageUrl && (
@@ -55,7 +57,7 @@ export function EventPreview({ eventId }: DebugSectionProps) {
               style={{ textDecoration: "none" }}
             >
               <Group gap="xs">
-                <span>View Event</span>
+                <span>{t("eventDebug.viewEvent")}</span>
                 <IconExternalLink size={12} />
               </Group>
             </Text>
